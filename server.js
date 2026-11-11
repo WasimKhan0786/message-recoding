@@ -91,8 +91,11 @@ app.get(['/login', '/login.html'], redirectIfAuthenticated, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
-// Static files (serves public directory)
-app.use(express.static(path.join(__dirname, 'public')));
+// Static files (serves public directory with browser cache enabled in production)
+app.use(express.static(path.join(__dirname, 'public'), {
+  maxAge: process.env.NODE_ENV === 'production' ? '1d' : 0,
+  etag: true
+}));
 
 // Explicit route for homepage
 app.get('/', (req, res) => {
