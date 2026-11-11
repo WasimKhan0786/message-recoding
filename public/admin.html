@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AudioFlow - Professional Admin Dashboard">
+  <title>Admin Dashboard — AudioFlow</title>
+
+  <!-- Google Fonts: Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Core Theme & Dedicated Admin Dashboard Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236366f1'><path d='M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z'/></svg>">
+</head>
+<body class="dashboard-body">
+
+  <!-- Mobile Sidebar Overlay Backdrop -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <!-- Main Dashboard Layout Shell -->
+  <div class="dashboard-layout">
+
+    <!-- 1. Professional Dark-Blue Sidebar Navigation -->
+    <aside class="dashboard-sidebar" id="dashboardSidebar">
+      
+      <!-- Brand & Console Title -->
+      <div class="sidebar-header">
+        <a href="/" class="brand-logo" title="Back to Homepage">
+          <div class="logo-icon-wrapper">
+            <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 10v4" />
+              <path d="M6 6v12" />
+              <path d="M10 3v18" />
+              <path d="M14 7v10" />
+              <path d="M18 5v14" />
+              <path d="M22 11v2" />
+            </svg>
+          </div>
+          <div class="brand-text-col">
+            <span class="brand-text">Audio<span class="brand-accent">Flow</span></span>
+            <span class="sidebar-portal-badge">Admin Console</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="sidebar-nav" id="sidebarNav">
+        <div class="nav-section-label">Main Menu</div>
+
+        <!-- 1. Dashboard Overview -->
+        <a href="#overview" class="nav-item active" data-section="overview">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="9" rx="1"></rect>
+            <rect x="14" y="3" width="7" height="5" rx="1"></rect>
+            <rect x="14" y="12" width="7" height="9" rx="1"></rect>
+            <rect x="3" y="16" width="7" height="5" rx="1"></rect>
+          </svg>
+          <span class="nav-label">Dashboard Overview</span>
+        </a>
+
+        <!-- 2. Audio Library -->
+        <a href="#audio-library" class="nav-item" data-section="audio-library">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 18V5l12-2v13"></path>
+            <circle cx="6" cy="18" r="3"></circle>
+            <circle cx="18" cy="16" r="3"></circle>
+          </svg>
+          <span class="nav-label">Audio Library</span>
+          <span class="nav-counter" id="audioCountBadge">0</span>
+        </a>
+
+        <!-- 3. Recipients Management -->
+        <a href="#recipients" class="nav-item" data-section="recipients">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          <span class="nav-label">Recipients Management</span>
+          <span class="nav-counter" id="recipientCountBadge">0</span>
+        </a>
+
+        <!-- 4. Shared Links -->
+        <a href="#shared-links" class="nav-item" data-section="shared-links">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+          </svg>
+          <span class="nav-label">Shared Links</span>
+          <span class="nav-counter" id="linksCountBadge">0</span>
+        </a>
+
+        <!-- Listener Comprehension Responses -->
+        <a href="#responses" class="nav-item" data-section="responses">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+          <span class="nav-label">Listener Responses</span>
+          <span class="nav-counter" id="responsesCountBadge">0</span>
+        </a>
+
+        <div class="nav-section-label" style="margin-top: 18px;">Analytics & Logs</div>
+
+        <!-- 5. Recent Activity -->
+        <a href="#activity" class="nav-item" data-section="activity">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span class="nav-label">Recent Activity</span>
+        </a>
+
+        <!-- 6. Link Click Tracking -->
+        <a href="#click-tracking" class="nav-item" data-section="click-tracking">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14L21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          </svg>
+          <span class="nav-label">Link Click Tracking</span>
+        </a>
+
+        <!-- 7. Listening Progress -->
+        <a href="#listening-progress" class="nav-item" data-section="listening-progress">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+          <span class="nav-label">Listening Progress</span>
+        </a>
+
+        <div class="nav-section-label" style="margin-top: 18px;">Presentation & Customization</div>
+
+        <!-- Welcome Page Settings -->
+        <a href="#welcome-settings" class="nav-item" data-section="welcome-settings">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+          </svg>
+          <span class="nav-label">Welcome Page Settings</span>
+        </a>
+
+        <div class="nav-section-label" style="margin-top: 18px;">System</div>
+
+        <!-- 8. Settings -->
+        <a href="#settings" class="nav-item" data-section="settings">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          <span class="nav-label">Settings</span>
+        </a>
+      </nav>
+
+      <!-- Sidebar Footer: Admin Profile & 9. Logout Button -->
+      <div class="sidebar-footer">
+        <div class="admin-user-card">
+          <div class="admin-avatar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+          <div class="admin-meta">
+            <span class="admin-role-badge">Super Admin</span>
+            <span class="admin-email-text" id="sidebarAdminEmail">admin@audioflow.local</span>
+          </div>
+        </div>
+
+        <!-- 9. Logout Button -->
+        <button id="logoutSidebarBtn" class="sidebar-logout-btn" title="Sign Out of Admin Console">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          <span>Sign Out</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="dashboard-main">
+
+      <!-- Top Header Bar -->
+      <header class="dashboard-topbar">
+        <div class="topbar-left">
+          <button class="topbar-toggle" id="sidebarToggle" aria-label="Toggle Navigation Sidebar">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <div class="topbar-title-group">
+            <h1 class="topbar-title" id="pageTitle">Dashboard Overview</h1>
+            <span class="topbar-subtitle">AudioFlow Audio Management System</span>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <!-- Live API Status Indicator -->
+          <div class="status-pill">
+            <span class="live-dot"></span>
+            <span id="systemStatusLabel">System: Operational</span>
+          </div>
+
+          <a href="/" target="_blank" class="btn btn-outline btn-sm" title="View Public Website">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+            <span>Public Site</span>
+          </a>
+
+          <button id="quickLogoutBtn" class="btn btn-secondary btn-sm" title="Sign Out">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            <span>Logout</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Dashboard Viewport Content Area -->
+      <main class="dashboard-content">
+
+        <!-- Global Toast Notification -->
+        <div id="toastNotification" class="toast-notification hidden" role="alert">
+          <span class="toast-icon" id="toastIcon"></span>
+          <span class="toast-message" id="toastMessage"></span>
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- 1. SECTION: DASHBOARD OVERVIEW -->
+        <!-- ================================================================= -->
+        <section id="section-overview" class="dashboard-section active">
+          
+          <!-- Welcome / Overview Header -->
+          <div class="section-title-bar">
+            <div>
+              <h2 class="section-heading">Platform Overview & Metrics</h2>
+              <p class="section-desc">Real-time statistics calculated strictly from active backend data.</p>
+            </div>
+            <div class="action-btn-group">
+              <button class="btn btn-secondary btn-sm" id="refreshStatsBtn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="23 4 23 10 17 10"></polyline>
+                  <polyline points="1 20 1 14 7 14"></polyline>
+                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                </svg>
+                <span>Refresh Data</span>
+              </button>
+              <button class="btn btn-primary btn-sm" id="quickAddAudioBtn">
+                + Add Audio Record
+              </button>
+            </div>
+          </div>
+
+          <!-- 6 Responsive Dashboard KPI Cards (Real Data Only) -->
+          <div class="kpi-grid">
+            
+            <!-- Card 1: Total Audios -->
+            <div class="kpi-card">
+              <div class="kpi-icon-box icon-indigo">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 18V5l12-2v13"></path>
+                  <circle cx="6" cy="18" r="3"></circle>
+                  <circle cx="18" cy="16" r="3"></circle>
+                </svg>
+              </div>
+              <div class="kpi-body">
+                <span class="kpi-label">Total Audios</span>
+                <span class="kpi-value" id="statTotalAudios">0</span>
+                <span class="kpi-subtext">Cataloged audio tracks</span>
+              </div>
+            </div>
+
+            <!-- Card 2: Total Storage Used -->
+            <div class="kpi-card">
+              <div class="kpi-icon-box icon-cyan">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 12H2"></path>
+                  <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path>
+                  <line x1="6" y1="16" x2="6.01" y2="16"></line>
+                  <line x1="10" y1="16" x2="10.01" y2="16"></line>
+                </svg>
+              </div>
+              <div class="kpi-body">
+                <span class="kpi-label">Storage Used</span>
+                <span class="kpi-value" id="statTotalStorage">0 MB</span>
+                <span class="kpi-subtext">Filebase S3 bucket usage</span>
+              </div>
+            </div>
+
+            <!-- Card 3: Total Links -->
+            <div class="kpi-card">
+              <div class="kpi-icon-box icon-violet">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                </svg>
+              </div>
+              <div class="kpi-body">
+                <span class="kpi-label">Total Links</span>
+                <span class="kpi-value" id="statTotalLinks">0</span>
+                <span class="kpi-subtext">Generated share links</span>
+              </div>
+            </div>
+
+            <!-- Card 4: Active Links -->
+            <div class="kpi-card">
+              <div class="kpi-icon-box icon-emerald">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 14 14"></polyline>
+                </svg>
+              </div>
+              <div class="kpi-body">
+                <span class="kpi-label">Active Links</span>
+                <span class="kpi-value" id="statActiveLinks">0</span>
+                <span class="kpi-subtext">Available for playback</span>
+              </div>
+            </div>
+
+            <!-- Card 5: Inactive / Expired Links -->
+            <div class="kpi-card">
+              <div class="kpi-icon-box icon-amber">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="15" y1="9" x2="9" y2="15"></line>
+                  <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+              </div>
+              <div class="kpi-body">
+                <span class="kpi-label">Expired / Disabled</span>
+                <span class="kpi-value" id="statInactiveLinks">0</span>
+                <span class="kpi-subtext">Revoked or past validity</span>
+              </div>
+            </div>
+
+            <!-- Card 6: Total Clicks & Listens -->
+            <div class="kpi-card">
+              <div class="kpi-icon-box icon-rose">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M15 3h6v6"></path>
+                  <path d="M10 14L21 3"></path>
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                </svg>
+              </div>
+              <div class="kpi-body">
+                <span class="kpi-label">Total Clicks</span>
+                <span class="kpi-value" id="statTotalClicks">0</span>
+                <span class="kpi-subtext">Total recipient accesses</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Overview Dual Grid -->
+          <div class="overview-dual-grid">
+            
+            <!-- Recent Uploads Widget -->
+            <div class="dash-card">
+              <div class="card-header-bar">
+                <h3 class="card-heading">Recent Audio Uploads</h3>
+                <a href="#audio-library" class="card-link-action" data-nav="audio-library">View Library &rarr;</a>
+              </div>
+              <div class="table-responsive" style="max-height: 290px;">
+                <table class="data-table" style="font-size: 0.85rem;">
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                      <th>Duration</th>
+                      <th>Size</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="overviewRecentUploads">
+                    <!-- Injected via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Quick Activity Widget -->
+            <div class="dash-card">
+              <div class="card-header-bar">
+                <h3 class="card-heading">Recent Sharing Activity</h3>
+                <a href="#activity" class="card-link-action" data-nav="activity">Audit Log &rarr;</a>
+              </div>
+              <div id="overviewActivityList" class="mini-activity-feed">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- 2. SECTION: AUDIO LIBRARY -->
+        <!-- ================================================================= -->
+        <section id="section-audio-library" class="dashboard-section">
+          <div class="section-title-bar">
+            <div>
+              <h2 class="section-heading">Audio Library</h2>
+              <p class="section-desc">Manage cataloged audio files, formats, and sharing status.</p>
+            </div>
+            <button class="btn btn-primary btn-sm" id="openAddAudioModalBtn">
+              + Add Audio Record
+            </button>
+          </div>
+
+          <div class="filter-bar">
+            <div class="search-input-box">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" id="audioSearchInput" placeholder="Search by title, genre, or format...">
+            </div>
+          </div>
+
+          <div class="dash-card table-card">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Audio Title</th>
+                    <th>Original File</th>
+                    <th>Format</th>
+                    <th>Duration</th>
+                    <th>Size</th>
+                    <th>Uploaded</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="audioTableBody">
+                  <!-- Injected via JS -->
+                </tbody>
+              </table>
+            </div>
+            <div id="audioEmptyState" class="empty-state hidden">
+              <div class="empty-icon-circle">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M9 18V5l12-2v13"></path>
+                  <circle cx="6" cy="18" r="3"></circle>
+                  <circle cx="18" cy="16" r="3"></circle>
+                </svg>
+              </div>
+              <h4 class="empty-title">No Audio Records Found</h4>
+              <p class="empty-desc">Your audio library is currently empty. Click below to add your first audio track.</p>
+              <button class="btn btn-outline btn-sm" id="emptyAddAudioBtn">+ Add Audio Record</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- 3. SECTION: RECIPIENTS MANAGEMENT -->
+        <!-- ================================================================= -->
+        <section id="section-recipients" class="dashboard-section">
+          <div class="section-title-bar">
+            <div>
+              <h2 class="section-heading">Recipients Management</h2>
+              <p class="section-desc">Manage your listening audience, client contacts, and recipient groups.</p>
+            </div>
+            <button class="btn btn-primary btn-sm" id="openAddRecipientModalBtn">
+              + Add Recipient
+            </button>
+          </div>
+
+          <div class="filter-bar">
+            <div class="search-input-box">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" id="recipientSearchInput" placeholder="Search by name, email, or group...">
+            </div>
+          </div>
+
+          <div class="dash-card table-card">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Recipient Name</th>
+                    <th>Email Address</th>
+                    <th>Group / Tag</th>
+                    <th>Registered Date</th>
+                    <th>Shared Links</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="recipientsTableBody">
+                  <!-- Injected via JS -->
+                </tbody>
+              </table>
+            </div>
+            <div id="recipientsEmptyState" class="empty-state hidden">
+              <div class="empty-icon-circle">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                </svg>
+              </div>
+              <h4 class="empty-title">No Recipients Registered</h4>
+              <p class="empty-desc">You haven't added any audio recipients yet. Register recipients to start sharing trackable audio links.</p>
+              <button class="btn btn-outline btn-sm" id="emptyAddRecipientBtn">+ Add Recipient</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- 4. SECTION: SHARED LINKS -->
+        <!-- ================================================================= -->
+        <section id="section-shared-links" class="dashboard-section">
+          <div class="section-title-bar">
+            <div>
+              <h2 class="section-heading">Shared Links</h2>
+              <p class="section-desc">Manage distributed audio links, expiration policies, and active access tokens.</p>
+            </div>
+            <button class="btn btn-primary btn-sm" id="openCreateLinkModalBtn">
+              + Generate Shared Link
+            </button>
+          </div>
+
+          <div class="dash-card table-card">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Sharing Link</th>
+                    <th>Audio Track</th>
+                    <th>Recipient</th>
+                    <th>Security</th>
+                    <th>Expires</th>
+                    <th>Status</th>
+                    <th>Clicks</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="linksTableBody">
+                  <!-- Injected via JS -->
+                </tbody>
+              </table>
+            </div>
+            <div id="linksEmptyState" class="empty-state hidden">
+              <div class="empty-icon-circle">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                </svg>
+              </div>
+              <h4 class="empty-title">No Shared Links Active</h4>
+              <p class="empty-desc">Generate trackable audio links to share protected audio with specific recipients.</p>
+              <button class="btn btn-outline btn-sm" id="emptyCreateLinkBtn">+ Generate Shared Link</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- SECTION: LISTENER RESPONSES & UNDERSTANDING -->
+        <!-- ================================================================= -->
+        <section id="section-responses" class="dashboard-section">
+          <div class="section-title-bar">
+            <div>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <h2 class="section-heading" style="margin: 0;">Listener Responses</h2>
+                <span id="unreadResponsesAlertBadge" class="table-badge badge-active hidden" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); font-size: 0.75rem;">
+                  ● Unread Responses
+                </span>
+              </div>
+              <p class="section-desc">Review and reflect on what listeners understood from each recording part.</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" id="refreshResponsesBtn">Refresh Responses</button>
+          </div>
+
+          <div class="dash-card table-card">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Date & Time</th>
+                    <th>Recording / Part</th>
+                    <th>Listener / Recipient</th>
+                    <th>Listening Completion</th>
+                    <th>Written Response</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="responsesTableBody">
+                  <!-- Injected via JS -->
+                </tbody>
+              </table>
+            </div>
+            <div id="responsesEmptyState" class="empty-state hidden">
+              <div class="empty-icon-circle">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+              </div>
+              <h4 class="empty-title">No Listener Responses Yet</h4>
+              <p class="empty-desc">When listeners complete audio recording playback and submit what they understood in their own words, their responses will appear here for review.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- 5. SECTION: RECENT ACTIVITY -->
+        <!-- ================================================================= -->
+        <section id="section-activity" class="dashboard-section">
+          <div class="section-title-bar">
+            <div>
+              <h2 class="section-heading">Recent Activity Log</h2>
+              <p class="section-desc">Audit trail of admin operations, authentication events, and link access.</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" id="refreshActivityBtn">Refresh Log</button>
+          </div>
+
+          <div class="dash-card">
+            <div id="activityTimelineList" class="activity-timeline">
+              <!-- Injected via JS -->
+            </div>
+            <div id="activityEmptyState" class="empty-state hidden">
+              <h4 class="empty-title">No Activity Recorded Yet</h4>
+              <p class="empty-desc">System events will be logged here as actions occur.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- 6. SECTION: LINK CLICK TRACKING -->
+        <!-- ================================================================= -->
+        <section id="section-click-tracking" class="dashboard-section">
+          <div class="section-title-bar">
+            <div>
+              <h2 class="section-heading">Link Click Tracking</h2>
+              <p class="section-desc">Real-time log of recipient click visits on generated audio links.</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" id="refreshClicksBtn">Refresh Clicks</button>
+          </div>
+
+          <div class="dash-card table-card">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Log ID</th>
+                    <th>Shared Token</th>
+                    <th>IP Address</th>
+                    <th>User Agent / Device</th>
+                    <th>Referrer</th>
+                    <th>Timestamp</th>
+                  </tr>
+                </thead>
+                <tbody id="clicksTableBody">
+                  <!-- Injected via JS -->
+                </tbody>
+              </table>
+            </div>
+            <div id="clicksEmptyState" class="empty-state hidden">
+              <div class="empty-icon-circle">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M15 3h6v6"></path>
+                  <path d="M10 14L21 3"></path>
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                </svg>
+              </div>
+              <h4 class="empty-title">Zero Link Clicks Tracked</h4>
+              <p class="empty-desc">No clicks recorded yet. When recipients click their shared audio links, detailed session entries will appear here.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- 7. SECTION: LISTENING PROGRESS -->
+        <!-- ================================================================= -->
+        <section id="section-listening-progress" class="dashboard-section">
+          <div class="section-title-bar">
+            <div>
+              <h2 class="section-heading">Listening Progress & Completion</h2>
+              <p class="section-desc">Granular progress metrics showing how much audio each recipient completed.</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" id="refreshProgressBtn">Refresh Progress</button>
+          </div>
+
+          <div class="dash-card table-card">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Audio Track</th>
+                    <th>Recipient</th>
+                    <th>Progress Bar</th>
+                    <th>Percentage</th>
+                    <th>Duration Played</th>
+                    <th>Timestamp</th>
+                  </tr>
+                </thead>
+                <tbody id="progressTableBody">
+                  <!-- Injected via JS -->
+                </tbody>
+              </table>
+            </div>
+            <div id="progressEmptyState" class="empty-state hidden">
+              <div class="empty-icon-circle">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <line x1="18" y1="20" x2="18" y2="10"></line>
+                  <line x1="12" y1="20" x2="12" y2="4"></line>
+                  <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+              </div>
+              <h4 class="empty-title">Zero Listening Progress Data</h4>
+              <p class="empty-desc">No playback sessions recorded yet. Listening telemetry will register here in real time as recipients stream audio.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- SECTION: WELCOME PAGE SETTINGS -->
+        <!-- ================================================================= -->
+        <section id="section-welcome-settings" class="dashboard-section">
+          <div class="section-title-bar">
+            <div>
+              <h2 class="section-heading">Welcome Page Settings</h2>
+              <p class="section-desc">Customize the profile image, welcome heading, description, and thank-you note presented on the public listening page.</p>
+            </div>
+            <div class="section-actions">
+              <a href="/" target="_blank" class="btn btn-secondary" style="font-size: 0.85rem;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                <span>Preview AudioFlow</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Alert / Toast placeholder for this section -->
+          <div id="welcomeSettingsAlert" class="hidden" style="margin-bottom: 20px; padding: 14px 18px; border-radius: 12px; font-size: 0.9rem;"></div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 24px; max-width: 1100px;">
+            
+            <!-- Left Card: Form Settings & Image Upload -->
+            <div class="dash-card">
+              <h3 class="card-heading" style="margin-bottom: 20px;">Presentation Content</h3>
+              
+              <form id="formWelcomeSettings" class="settings-form">
+                
+                <!-- Enable/Disable Switch -->
+                <div style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 12px; padding: 14px 16px; margin-bottom: 20px;">
+                  <label class="checkbox-label" style="display: flex; align-items: center; justify-content: space-between; cursor: pointer; margin: 0;">
+                    <div>
+                      <span style="font-weight: 600; color: #fff; display: block; font-size: 0.95rem;">Enable Welcome Section</span>
+                      <small style="color: var(--text-dim); display: block; font-size: 0.8rem; margin-top: 2px;">Display this profile image, heading, and thank-you note at the top of the public listening page.</small>
+                    </div>
+                    <input type="checkbox" id="welcomeEnabledInput" checked style="width: 20px; height: 20px; accent-color: #6366f1; cursor: pointer;">
+                  </label>
+                </div>
+
+                <!-- Welcome/Profile Image Upload & Preview -->
+                <div class="form-group">
+                  <label class="form-label">Welcome / Profile Image (Stored in Filebase S3)</label>
+                  <div style="display: flex; gap: 16px; align-items: center; margin-top: 8px;">
+                    <div style="position: relative; width: 84px; height: 84px; border-radius: 20px; overflow: hidden; border: 2px solid rgba(99, 102, 241, 0.4); background: #121627; flex-shrink: 0; box-shadow: 0 4px 14px rgba(0,0,0,0.4);">
+                      <img id="welcomeImagePreview" src="/api/public/welcome-image" alt="Welcome Profile Preview" style="width: 100%; height: 100%; object-fit: cover;">
+                      <div id="imageUploadSpinner" class="hidden" style="position: absolute; inset: 0; background: rgba(0,0,0,0.65); display: flex; align-items: center; justify-content: center;">
+                        <div class="spinner" style="width: 24px; height: 24px; margin: 0;"></div>
+                      </div>
+                    </div>
+                    <div style="flex: 1;">
+                      <input type="file" id="welcomeImageFileInput" accept="image/*,.jpg,.jpeg,.png,.webp,.gif,.svg,.jfif,.pjpeg,.avif,.bmp,.heic" style="display: none;">
+                      <button type="button" class="btn btn-secondary" id="chooseImageBtn" style="font-size: 0.84rem; padding: 6px 14px; margin-bottom: 6px;">
+                        📷 Upload New Image
+                      </button>
+                      <small style="color: var(--text-dim); display: block; font-size: 0.78rem;">JPG, PNG, WEBP, GIF, SVG (Max 25MB). Stored securely in Filebase S3.</small>
+                      <span id="selectedImageFilename" style="color: #818cf8; font-size: 0.78rem; font-weight: 500;"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Welcome Heading -->
+                <div class="form-group">
+                  <label for="welcomeHeadingInput" class="form-label">Welcome Heading *</label>
+                  <input type="text" id="welcomeHeadingInput" class="form-input" placeholder="e.g. A Message Especially for You" required>
+                  <small style="color: var(--text-dim); font-size: 0.78rem;">Displayed prominently at the top of the personal digital letter.</small>
+                </div>
+
+                <!-- Welcome Description -->
+                <div class="form-group">
+                  <label for="welcomeDescInput" class="form-label">Welcome Description *</label>
+                  <textarea id="welcomeDescInput" class="form-input" rows="2" placeholder="e.g. I have something important and personal that I would like to share with you..." required></textarea>
+                </div>
+
+                <!-- Personal Written Letter / Introduction -->
+                <div class="form-group">
+                  <label for="welcomeLetterBodyInput" class="form-label">Personal Written Letter / Introduction *</label>
+                  <textarea id="welcomeLetterBodyInput" class="form-input" rows="6" placeholder="Write the complete personal letter to your recipient here (paragraphs supported)..." required></textarea>
+                  <small style="color: var(--text-dim); font-size: 0.78rem;">Rendered with editorial typography as the body of your digital letter.</small>
+                </div>
+
+                <!-- Important Information & Disclaimer -->
+                <div class="form-group">
+                  <label for="welcomeDisclaimerInput" class="form-label">Important Information & Disclaimer *</label>
+                  <textarea id="welcomeDisclaimerInput" class="form-input" rows="3" placeholder="Explain the purpose, privacy protection, and reflection process..." required></textarea>
+                </div>
+
+                <!-- Listening Instructions -->
+                <div class="form-group">
+                  <label for="welcomeInstructionsInput" class="form-label">Listening Instructions *</label>
+                  <textarea id="welcomeInstructionsInput" class="form-input" rows="3" placeholder="Provide listening recommendations (quiet space, headphones, sequential flow)..." required></textarea>
+                </div>
+
+                <!-- Thank You Message -->
+                <div class="form-group">
+                  <label for="welcomeThankYouInput" class="form-label">Thank-You Message *</label>
+                  <textarea id="welcomeThankYouInput" class="form-input" rows="2" placeholder="e.g. Thank you for your time, care, and attentive listening." required></textarea>
+                  <small style="color: var(--text-dim); font-size: 0.78rem;">Shown in an appreciation badge directly beneath the letter.</small>
+                </div>
+
+                <div class="settings-actions" style="margin-top: 24px; display: flex; gap: 12px;">
+                  <button type="submit" class="btn btn-primary" id="saveWelcomeSettingsBtn" style="padding: 10px 24px;">
+                    <span>Save Changes</span>
+                  </button>
+                  <button type="button" class="btn btn-secondary" id="resetWelcomeSettingsBtn">
+                    Reset
+                  </button>
+                </div>
+
+              </form>
+            </div>
+
+            <!-- Right Card: Live Preview -->
+            <div class="dash-card">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                <h3 class="card-heading" style="margin: 0;">Live Public Page Preview</h3>
+                <span id="previewActiveBadge" class="table-badge badge-active">Active on Public Page</span>
+              </div>
+              <p style="color: var(--text-dim); font-size: 0.82rem; margin-bottom: 20px;">
+                This preview simulates exactly how listeners will see your welcome card at the top of the listening page.
+              </p>
+
+              <!-- Mock Public Listening Card -->
+              <div style="background: radial-gradient(circle at 50% 20%, #1e1b4b 0%, #070913 90%); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 20px; padding: 28px 22px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                
+                <!-- Mock Avatar -->
+                <div style="margin: 0 auto 16px; width: 88px; height: 88px; border-radius: 26px; overflow: hidden; border: 2px solid rgba(99, 102, 241, 0.6); box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35); background: #121627;">
+                  <img id="mockPreviewImg" src="/api/public/welcome-image" alt="Profile" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+
+                <!-- Mock Heading -->
+                <h4 id="mockPreviewHeading" style="font-family: var(--font-heading); font-size: 1.35rem; color: #fff; margin-bottom: 8px; font-weight: 700;">
+                  Welcome to AudioFlow
+                </h4>
+
+                <!-- Mock Description -->
+                <p id="mockPreviewDesc" style="color: #94a3b8; font-size: 0.86rem; line-height: 1.5; margin-bottom: 14px; max-width: 380px; margin-left: auto; margin-right: auto;">
+                  Immerse yourself in our audio lessons and curated recordings. Listen attentively to deepen your understanding.
+                </p>
+
+                <!-- Mock Thank You -->
+                <div style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 12px; padding: 10px 14px; margin-bottom: 20px; display: inline-flex; align-items: center; gap: 8px; font-size: 0.82rem; color: #34d399; max-width: 90%;">
+                  <span>💝</span>
+                  <span id="mockPreviewThankYou">Thank you for listening! We appreciate your engagement.</span>
+                </div>
+
+                <!-- Mock Start Listening Button -->
+                <div>
+                  <button type="button" style="background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff; border: none; padding: 10px 24px; border-radius: 999px; font-weight: 600; font-size: 0.88rem; cursor: default; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 18px rgba(99, 102, 241, 0.4);">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    <span>Start Listening</span>
+                  </button>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- 8. SECTION: SETTINGS -->
+        <!-- ================================================================= -->
+        <section id="section-settings" class="dashboard-section">
+          <div class="section-title-bar">
+            <div>
+              <h2 class="section-heading">Platform & Security Settings</h2>
+              <p class="section-desc">Manage system preferences, admin security, and access policies.</p>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px; max-width: 980px;">
+            
+            <!-- Card 1: Platform Preferences -->
+            <div class="dash-card">
+              <h3 class="card-heading" style="margin-bottom: 20px;">Platform Configuration</h3>
+              <form id="settingsForm" class="settings-form">
+                <div class="form-group">
+                  <label for="settingSiteName" class="form-label">Platform Application Name</label>
+                  <input type="text" id="settingSiteName" class="form-input" value="AudioFlow" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="settingAdminEmail" class="form-label">Admin Alert & Contact Email</label>
+                  <input type="email" id="settingAdminEmail" class="form-input" value="admin@audioflow.local" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="settingDefaultExpireDays" class="form-label">Default Shared Link Validity</label>
+                  <select id="settingDefaultExpireDays" class="form-input">
+                    <option value="1">24 Hours (1 Day)</option>
+                    <option value="7" selected>7 Days (Recommended)</option>
+                    <option value="30">30 Days</option>
+                    <option value="0">Permanent (No Expiration)</option>
+                  </select>
+                </div>
+
+                <div class="settings-checkbox-row">
+                  <label class="checkbox-label">
+                    <input type="checkbox" id="settingTrackLocations" checked>
+                    <span>Log IP Addresses & Telemetry for Shared Link Access</span>
+                  </label>
+                </div>
+
+                <div class="settings-actions">
+                  <button type="submit" class="btn btn-primary" id="saveSettingsBtn">Save Preferences</button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Card 2: Security & Change Admin Password -->
+            <div class="dash-card">
+              <h3 class="card-heading" style="margin-bottom: 20px;">Admin Authentication & Security</h3>
+              
+              <div style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 12px; padding: 14px 16px; margin-bottom: 20px; font-size: 0.85rem; color: #cbd5e1;">
+                <div style="font-weight: 600; color: #fff; margin-bottom: 4px;">Active Admin Session</div>
+                <div>Account: <strong id="adminProfileEmail">admin@audioflow.local</strong></div>
+                <div style="color: #94a3b8; font-size: 0.78rem; margin-top: 4px;">Session secured with HTTP-only bcrypt session engine.</div>
+              </div>
+
+              <form id="changePasswordForm">
+                <div class="form-group">
+                  <label for="currentPasswordInput" class="form-label">Current Password *</label>
+                  <input type="password" id="currentPasswordInput" class="form-input" placeholder="Enter current admin password" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="newPasswordInput" class="form-label">New Password *</label>
+                  <input type="password" id="newPasswordInput" class="form-input" placeholder="Minimum 8 characters" minlength="8" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="confirmPasswordInput" class="form-label">Confirm New Password *</label>
+                  <input type="password" id="confirmPasswordInput" class="form-input" placeholder="Repeat new password" minlength="8" required>
+                </div>
+
+                <div class="settings-actions">
+                  <button type="submit" class="btn btn-primary" id="savePasswordBtn">Update Password</button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Card 3: Storage & Access Security Architecture -->
+            <div class="dash-card" style="grid-column: 1 / -1;">
+              <h3 class="card-heading" style="margin-bottom: 14px;">Storage Architecture & Security Notice</h3>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; font-size: 0.86rem; color: #94a3b8; line-height: 1.6;">
+                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 16px;">
+                  <strong style="color: #e2e8f0; display: block; margin-bottom: 6px;">🔒 Private Filebase S3 Bucket</strong>
+                  Audio recordings are stored in a private Filebase S3 bucket. Raw storage URLs, AWS credentials, and IPFS keys are never sent to the client browser.
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 16px;">
+                  <strong style="color: #e2e8f0; display: block; margin-bottom: 6px;">⚡ HTTP 206 Range Streaming</strong>
+                  Playback streams dynamically through the AudioFlow server with HTTP Range requests. Download controls are suppressed on public player pages.
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 16px;">
+                  <strong style="color: #e2e8f0; display: block; margin-bottom: 6px;">🛡️ Security Transparency</strong>
+                  While direct downloads and raw links are strictly hidden, client-side browser streaming cannot guarantee 100% prevention of external analog recording.
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- FLOATING AUDIO PREVIEW PLAYER DOCK -->
+  <!-- ===================================================================== -->
+  <div id="adminAudioDock" class="admin-audio-dock hidden">
+    <div class="dock-inner">
+      <div class="dock-track-info">
+        <div class="dock-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 18V5l12-2v13"></path>
+            <circle cx="6" cy="18" r="3"></circle>
+            <circle cx="18" cy="16" r="3"></circle>
+          </svg>
+        </div>
+        <div class="dock-meta">
+          <span class="dock-title" id="dockTrackTitle">Loading Preview...</span>
+          <span class="dock-sub" id="dockTrackSub">Streaming directly from Filebase S3 (128 kbps MP3)</span>
+        </div>
+      </div>
+      <div class="dock-player-controls">
+        <audio id="dashboardAudioPlayer" controls preload="none" style="height: 38px; width: 340px; outline: none;"></audio>
+      </div>
+      <button id="closeDockBtn" class="dock-close-btn" title="Close Preview Player">&times;</button>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODALS -->
+  <!-- ===================================================================== -->
+
+  <!-- Modal 1: Add Audio Record & File Upload -->
+  <div class="modal-overlay hidden" id="modalAddAudio">
+    <div class="modal-box" style="max-width: 560px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Upload & Process Audio</h3>
+        <button class="modal-close-btn" data-close="modalAddAudio">&times;</button>
+      </div>
+      <form id="formAddAudio">
+        <div class="modal-body">
+
+          <!-- Drag and Drop Audio File Dropzone -->
+          <div class="upload-dropzone" id="audioDropzone">
+            <input type="file" id="audioFileInput" name="audioFile" accept=".mp3,.wav,.m4a,audio/*" class="file-input-hidden" required>
+            <div class="dropzone-content" id="dropzoneContent">
+              <div class="dropzone-icon">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+              </div>
+              <div class="dropzone-text">
+                <strong id="dropzoneLabel">Click to browse or drag audio here</strong>
+                <span>Supports MP3, WAV, and M4A (12, 15 & 30+ min recordings)</span>
+              </div>
+            </div>
+            <div id="fileSelectedBadge" class="file-badge hidden">
+              <span id="selectedFileName">filename.wav</span>
+              <span id="selectedFileSize" class="pill-badge pill-format">0 MB</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Audio Title *</label>
+            <input type="text" id="audioTitleInput" name="title" class="form-input" placeholder="e.g. Master Mix Studio Session" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Genre / Category</label>
+              <select id="audioGenreSelect" name="genre" class="form-input">
+                <option value="Ambient">Ambient</option>
+                <option value="Music">Music</option>
+                <option value="Podcast">Podcast</option>
+                <option value="Voice Recording">Voice Recording</option>
+                <option value="Soundscape">Soundscape</option>
+                <option value="Interview">Interview</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Processing Profile</label>
+              <div class="form-input" style="background: rgba(255,255,255,0.03); color: #cbd5e1; display: flex; align-items: center;">
+                ⚡ Auto FFmpeg &rarr; MP3 128k
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Notes / Description</label>
+            <textarea id="audioDescInput" name="description" class="form-input" rows="2" placeholder="Optional notes about this recording..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Comprehension / Understanding Question (Optional)</label>
+            <textarea id="audioQuestionInput" name="understandingQuestion" class="form-input" rows="2" placeholder="Question presented to listeners after completing this audio lesson..."></textarea>
+            <small style="color: var(--text-dim); font-size: 0.78rem;">Defaults to: What did you understand from this audio lesson? Please summarize your key takeaways in your own words.</small>
+          </div>
+
+          <!-- Upload Progress & Status Bar -->
+          <div id="uploadProgressContainer" class="upload-progress-box hidden">
+            <div class="progress-bar-header">
+              <span id="uploadStatusText">Uploading audio...</span>
+              <span id="uploadPercentText">0%</span>
+            </div>
+            <div class="progress-track-bg" style="height: 8px;">
+              <div id="uploadProgressBarFill" class="progress-track-fill" style="width: 0%;"></div>
+            </div>
+            <span class="upload-stage-info" id="uploadStageInfo">1. Uploading &bull; 2. FFmpeg 128kbps Encoding &bull; 3. Filebase S3 Store</span>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="modalAddAudio" id="cancelAudioUploadBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="startAudioUploadBtn">Upload & Process</button>
+        </div>
+      </form>
+    </div>
+  </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: Add Recipient -->
+  <div class="modal-overlay hidden" id="modalAddRecipient">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">Register New Recipient</h3>
+        <button class="modal-close-btn" data-close="modalAddRecipient">&times;</button>
+      </div>
+      <form id="formAddRecipient">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Full Name *</label>
+            <input type="text" id="recipNameInput" class="form-input" placeholder="e.g. Sarah Jenkins" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address *</label>
+            <input type="email" id="recipEmailInput" class="form-input" placeholder="sarah@example.com" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Group / Tag</label>
+            <input type="text" id="recipGroupInput" class="form-input" placeholder="e.g. VIP Clients, Reviewers, Production Team">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Notes</label>
+            <textarea id="recipNotesInput" class="form-input" rows="2" placeholder="Optional contact notes..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="modalAddRecipient">Cancel</button>
+          <button type="submit" class="btn btn-primary">Add Recipient</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 3: Generate Shared Link -->
+  <div class="modal-overlay hidden" id="modalCreateLink">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">Generate Secure Sharing Link</h3>
+        <button class="modal-close-btn" data-close="modalCreateLink">&times;</button>
+      </div>
+      <form id="formCreateLink">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Select Audio Track *</label>
+            <select id="linkAudioSelect" class="form-input" required>
+              <option value="">-- Choose Audio --</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Target Recipient (Optional)</label>
+            <select id="linkRecipientSelect" class="form-input">
+              <option value="">-- Public / General Link (No Specific Recipient) --</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Link Expiration</label>
+            <select id="linkExpiresOption" class="form-input">
+              <option value="24h">24 Hours (1 Day)</option>
+              <option value="7d" selected>7 Days (Standard)</option>
+              <option value="30d">30 Days (1 Month)</option>
+              <option value="permanent">Permanent (Never Expires)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="checkbox-label" style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin-bottom: 8px;">
+              <input type="checkbox" id="linkEnablePassword">
+              <span>Protect Link With Password</span>
+            </label>
+            <div id="linkPasswordBox" class="hidden">
+              <input type="password" id="linkPasswordInput" class="form-input" placeholder="Set custom access password...">
+              <small class="field-hint">Recipients must enter this password to stream the audio.</small>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Sharing Notes (Optional)</label>
+            <input type="text" id="linkNotesInput" class="form-input" placeholder="e.g. Master mix preview v2">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="modalCreateLink">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="submitCreateLinkBtn">Generate Secure Link</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 4: Edit Audio Information -->
+  <div class="modal-overlay hidden" id="modalEditAudio">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">Edit Audio Information</h3>
+        <button class="modal-close-btn" data-close="modalEditAudio">&times;</button>
+      </div>
+      <form id="formEditAudio">
+        <input type="hidden" id="editAudioIdInput">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Audio Title *</label>
+            <input type="text" id="editAudioTitleInput" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Genre / Tag</label>
+            <select id="editAudioGenreSelect" class="form-input">
+              <option value="General">General</option>
+              <option value="Podcast">Podcast</option>
+              <option value="Music">Music</option>
+              <option value="Voice Memo">Voice Memo</option>
+              <option value="Ambient">Ambient</option>
+              <option value="Soundtrack">Soundtrack</option>
+              <option value="Interview">Interview</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description / Notes</label>
+            <textarea id="editAudioDescInput" class="form-input" rows="2" placeholder="Add track context or notes..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Comprehension / Understanding Question</label>
+            <textarea id="editAudioQuestionInput" class="form-input" rows="2" placeholder="Question presented to listeners after audio lesson completes..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Unlock Next Audio (Optional Sequence Link)</label>
+            <select id="editNextAudioSelect" class="form-input">
+              <option value="">-- Automatically Follow Sequential Order --</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="modalEditAudio">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveEditAudioBtn">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 5: Review Listener Response -->
+  <div class="modal-overlay hidden" id="modalReviewResponse">
+    <div class="modal-box" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Review Listener Reflection</h3>
+        <button class="modal-close-btn" data-close="modalReviewResponse">&times;</button>
+      </div>
+      <form id="formReviewResponse">
+        <input type="hidden" id="reviewResponseId">
+        <div class="modal-body">
+          <div style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 14px 16px; margin-bottom: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 8px;">
+              <div>
+                <span id="reviewPartNumber" class="table-badge badge-active" style="background: rgba(99, 102, 241, 0.2); color: #818cf8; margin-right: 6px;">Part 1</span>
+                <span>Audio Lesson: <strong id="reviewAudioTitle" style="color: #fff;">-</strong></span>
+              </div>
+              <span id="reviewSubmittedAt">-</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: #cbd5e1;">
+              <div>Listener: <strong id="reviewListenerName" style="color: #818cf8;">-</strong></div>
+              <div id="reviewVerifiedStatus">
+                <span class="pill-badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3);">✓ Playback Verified (100%)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Question Asked to Listener</label>
+            <div id="reviewQuestionAsked" style="background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 12px; font-size: 0.88rem; color: #e2e8f0; line-height: 1.5;"></div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Listener's Submitted Response</label>
+            <div id="reviewResponseText" style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: 10px; padding: 14px; font-size: 0.95rem; color: #fff; line-height: 1.6; white-space: pre-wrap; max-height: 200px; overflow-y: auto;"></div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Admin Review Notes</label>
+            <textarea id="reviewAdminNotes" class="form-input" rows="3" placeholder="Add internal review notes or feedback for this listener..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Review Status</label>
+            <select id="reviewStatusSelect" class="form-input">
+              <option value="submitted">Submitted (Needs Review)</option>
+              <option value="reviewed">Reviewed (Approved / Checked)</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="modalReviewResponse">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveReviewBtn">Save Review</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Dashboard Client Script -->
+  <script src="js/admin.js"></script>
+</body>
+</html>

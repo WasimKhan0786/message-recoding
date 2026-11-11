@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A personal written message and voice recordings prepared especially for you. Listen attentively and share your reflection in your own words.">
+  <title>A Message Especially for You</title>
+  
+  <!-- Editorial Typography: Newsreader (Editorial Serif) & Plus Jakarta Sans (Clean Body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231e293b'><path d='M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z'/></svg>">
+
+  <style>
+    :root {
+      --bg-page: #faf8f5;
+      --bg-surface: #ffffff;
+      --bg-warm: #f5f2eb;
+      --bg-subtle: #f9f7f2;
+      
+      --text-ink: #0f172a;
+      --text-editorial: #1e293b;
+      --text-body: #334155;
+      --text-muted: #64748b;
+      --text-faint: #94a3b8;
+      
+      --border-light: #eae5dc;
+      --border-accent: #d8d0c2;
+      --border-focus: #0f172a;
+
+      --accent-navy: #0f172a;
+      --accent-navy-hover: #1e293b;
+      --accent-warm: #8a704c;
+      --accent-warm-light: #f7f3ed;
+
+      --success-bg: #f0fdf4;
+      --success-text: #166534;
+      --success-border: #bbf7d0;
+
+      --alert-bg: #fffbeb;
+      --alert-text: #92400e;
+      --alert-border: #fde68a;
+
+      --font-serif: 'Newsreader', 'Playfair Display', Georgia, 'Times New Roman', serif;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+      --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
+      --shadow-md: 0 4px 18px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+      --shadow-lg: 0 10px 30px -4px rgba(15, 23, 42, 0.07), 0 4px 10px -2px rgba(15, 23, 42, 0.03);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-body);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 18px 60px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Minimal Editorial Masthead */
+    .masthead {
+      width: 100%;
+      max-width: 680px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 24px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .masthead-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-ink);
+    }
+
+    .masthead-seal {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--text-ink);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-serif);
+      font-size: 0.85rem;
+      font-weight: 600;
+      font-style: italic;
+    }
+
+    .masthead-title {
+      font-family: var(--font-sans);
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .recipient-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent-warm);
+      background: var(--accent-warm-light);
+      border: 1px solid var(--border-light);
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    /* Page Container */
+    main {
+      width: 100%;
+      max-width: 680px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* Elegant Editorial Stationery Card */
+    .letter-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 42px 36px;
+      box-shadow: var(--shadow-md);
+      position: relative;
+    }
+
+    @media (max-width: 600px) {
+      .letter-card {
+        padding: 30px 22px;
+        border-radius: 12px;
+      }
+      body {
+        padding: 20px 12px 48px;
+      }
+    }
+
+    /* Section A: Personal Portrait Photograph */
+    .portrait-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+
+    .portrait-frame {
+      width: 104px;
+      height: 104px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 4px solid var(--bg-surface);
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.12);
+      outline: 1px solid var(--border-accent);
+      background: var(--bg-warm);
+    }
+
+    .portrait-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Section B: Heading */
+    .letter-heading {
+      font-family: var(--font-serif);
+      font-size: 2.15rem;
+      font-weight: 600;
+      color: var(--text-ink);
+      line-height: 1.25;
+      text-align: center;
+      margin-bottom: 12px;
+      letter-spacing: -0.015em;
+    }
+
+    @media (max-width: 600px) {
+      .letter-heading {
+        font-size: 1.8rem;
+      }
+    }
+
+    /* Section C: Welcome Description */
+    .letter-desc {
+      font-size: 1.02rem;
+      color: var(--text-muted);
+      text-align: center;
+      line-height: 1.65;
+      max-width: 540px;
+      margin: 0 auto 30px;
+    }
+
+    .letter-divider {
+      height: 1px;
+      background: var(--border-light);
+      margin: 28px 0;
+      width: 100%;
+    }
+
+    /* Section D: Personal Written Letter */
+    .letter-body {
+      font-family: var(--font-serif);
+      font-size: 1.14rem;
+      line-height: 1.82;
+      color: var(--text-editorial);
+      white-space: pre-wrap;
+      word-break: break-word;
+      margin-bottom: 28px;
+    }
+
+    /* Section E: Important Information & Disclaimer */
+    .disclaimer-card {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 22px 24px;
+      margin-bottom: 28px;
+      font-size: 0.92rem;
+    }
+
+    .disclaimer-title {
+      font-family: var(--font-sans);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent-warm);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .disclaimer-item {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+      color: var(--text-body);
+      line-height: 1.6;
+    }
+    .disclaimer-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .disclaimer-icon {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      margin-top: 3px;
+      color: var(--accent-warm);
+    }
+
+    /* Section F: Reading Confirmation Box */
+    .confirmation-box {
+      background: #faf9f6;
+      border: 1px solid var(--border-accent);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+    .confirmation-box:hover {
+      background: #ffffff;
+      border-color: var(--text-ink);
+    }
+
+    .confirmation-checkbox {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--accent-navy);
+      margin-top: 2px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .confirmation-label {
+      font-size: 0.94rem;
+      font-weight: 600;
+      color: var(--text-ink);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .confirmation-sub {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 400;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Section G: Continue / Proceed Button */
+    .proceed-btn {
+      width: 100%;
+      background: var(--accent-navy);
+      color: #ffffff;
+      border: none;
+      padding: 15px 24px;
+      border-radius: 10px;
+      font-family: var(--font-sans);
+      font-size: 0.96rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .proceed-btn:hover:not(:disabled) {
+      background: var(--accent-navy-hover);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-1px);
+    }
+
+    .proceed-btn:disabled {
+      background: #e2ded7;
+      color: #94a3b8;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    /* Appreciation Note */
+    .thank-you-badge {
+      text-align: center;
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 0.95rem;
+      color: var(--accent-warm);
+      margin-top: 18px;
+    }
+
+    /* =========================================================================
+       SECTION 4: PERSONAL RECORDING EXPERIENCE (CLEAN PLAYER)
+       ========================================================================= */
+    .recording-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 36px 36px;
+      box-shadow: var(--shadow-md);
+      transition: all 0.3s ease;
+    }
+
+    @media (max-width: 600px) {
+      .recording-card {
+        padding: 24px 20px;
+      }
+    }
+
+    .recording-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 22px;
+      gap: 12px;
+    }
+
+    .recording-part-indicator {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-warm);
+      margin-bottom: 4px;
+    }
+
+    .recording-title {
+      font-family: var(--font-serif);
+      font-size: 1.45rem;
+      font-weight: 600;
+      color: var(--text-ink);
+      line-height: 1.35;
+    }
+
+    .playback-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+    .status-completed {
+      background: var(--success-bg);
+      color: var(--success-text);
+      border: 1px solid var(--success-border);
+    }
+
+    /* Timeline Scrub Bar */
+    .timeline-container {
+      margin-bottom: 22px;
+    }
+
+    .timeline-bar-wrapper {
+      position: relative;
+      height: 6px;
+      background: var(--border-light);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: height 0.15s ease;
+    }
+    .timeline-bar-wrapper:hover {
+      height: 8px;
+    }
+
+    .timeline-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      background: var(--text-ink);
+      border-radius: 4px;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    .timeline-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Controls Row */
+    .controls-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .playback-btn-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-play-main {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--text-ink);
+      color: #ffffff;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+    }
+    .btn-play-main:hover {
+      background: var(--accent-navy-hover);
+      transform: scale(1.03);
+    }
+
+    .btn-control-secondary {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      color: var(--text-editorial);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .btn-control-secondary:hover {
+      background: var(--bg-subtle);
+      border-color: var(--border-accent);
+      color: var(--text-ink);
+    }
+
+    /* Dedicated Speed Controls */
+    .speed-control-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      padding: 3px;
+      border-radius: 8px;
+    }
+
+    .speed-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding: 0 6px 0 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .speed-pill-btn {
+      background: transparent;
+      border: none;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .speed-pill-btn:hover {
+      color: var(--text-ink);
+    }
+    .speed-pill-btn.active {
+      background: var(--text-ink);
+      color: #ffffff;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.1);
+    }
+
+    .alert-banner {
+      background: var(--alert-bg);
+      border: 1px solid var(--alert-border);
+      color: var(--alert-text);
+      padding: 14px 18px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      margin-top: 18px;
+    }
+
+    /* =========================================================================
+       SECTION 5: UNDERSTANDING & RESPONSE EXPERIENCE
+       ========================================================================= */
+    .response-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 36px 36px;
+      box-shadow: var(--shadow-md);
+      transition: all 0.3s ease;
+    }
+
+    @media (max-width: 600px) {
+      .response-card {
+        padding: 24px 20px;
+      }
+    }
+
+    .response-question-title {
+      font-family: var(--font-serif);
+      font-size: 1.45rem;
+      font-weight: 600;
+      color: var(--text-ink);
+      line-height: 1.35;
+      margin-bottom: 6px;
+    }
+
+    .response-question-sub {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .response-textarea {
+      width: 100%;
+      min-height: 140px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-accent);
+      border-radius: 10px;
+      padding: 16px 18px;
+      font-family: var(--font-sans);
+      font-size: 0.98rem;
+      line-height: 1.6;
+      color: var(--text-ink);
+      resize: vertical;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+    .response-textarea:focus {
+      outline: none;
+      border-color: var(--text-ink);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.06);
+    }
+
+    .response-textarea:disabled {
+      background: #f8fafc;
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+
+    .response-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      margin-bottom: 20px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .preview-stationery-box {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-left: 3px solid var(--accent-warm);
+      border-radius: 10px;
+      padding: 20px 22px;
+      margin-bottom: 22px;
+    }
+
+    .preview-stationery-header {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent-warm);
+      margin-bottom: 8px;
+    }
+
+    .preview-stationery-content {
+      font-family: var(--font-serif);
+      font-size: 1.08rem;
+      line-height: 1.7;
+      color: var(--text-editorial);
+      white-space: pre-wrap;
+    }
+
+    .response-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn-submit-response {
+      background: var(--text-ink);
+      color: #ffffff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-submit-response:hover:not(:disabled) {
+      background: var(--accent-navy-hover);
+      transform: translateY(-1px);
+    }
+    .btn-submit-response:disabled {
+      background: #cbd5e1;
+      cursor: not-allowed;
+    }
+
+    .btn-edit-response {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      color: var(--text-editorial);
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-edit-response:hover {
+      background: var(--bg-subtle);
+      border-color: var(--border-accent);
+    }
+
+    .success-banner {
+      background: var(--success-bg);
+      border: 1px solid var(--success-border);
+      color: var(--success-text);
+      padding: 16px 20px;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .next-unlock-card {
+      background: var(--bg-warm);
+      border: 1px solid var(--border-accent);
+      border-radius: 12px;
+      padding: 22px 24px;
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    .next-unlock-title {
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-ink);
+      margin-bottom: 6px;
+    }
+
+    .next-unlock-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    /* =========================================================================
+       SECTION 6: SEQUENTIAL CHAPTERS / RECORDINGS LIST
+       ========================================================================= */
+    .journey-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 30px 36px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    @media (max-width: 600px) {
+      .journey-card {
+        padding: 22px 20px;
+      }
+    }
+
+    .journey-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .journey-title {
+      font-family: var(--font-sans);
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
+    .journey-badge {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-ink);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      padding: 3px 10px;
+      border-radius: 12px;
+    }
+
+    .journey-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .chapter-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--border-light);
+      background: var(--bg-surface);
+      transition: all 0.2s ease;
+    }
+
+    .chapter-item.active {
+      border-color: var(--text-ink);
+      background: var(--bg-subtle);
+    }
+
+    .chapter-item.completed {
+      background: #fafaf7;
+    }
+
+    .chapter-item.locked {
+      opacity: 0.65;
+      background: #faf8f5;
+    }
+
+    .chapter-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .chapter-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-editorial);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .chapter-item.active .chapter-num {
+      background: var(--text-ink);
+      color: #ffffff;
+      border-color: var(--text-ink);
+    }
+    .chapter-item.completed .chapter-num {
+      background: var(--success-bg);
+      color: var(--success-text);
+      border-color: var(--success-border);
+    }
+
+    .chapter-name {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text-ink);
+    }
+
+    .chapter-meta {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* Password Gate */
+    .password-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 42px 36px;
+      box-shadow: var(--shadow-md);
+      text-align: center;
+      max-width: 480px;
+      margin: 40px auto;
+    }
+
+    .password-input {
+      width: 100%;
+      padding: 14px 18px;
+      border: 1px solid var(--border-accent);
+      border-radius: 8px;
+      font-size: 1rem;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    /* Footer */
+    footer {
+      width: 100%;
+      max-width: 680px;
+      text-align: center;
+      padding-top: 36px;
+      font-size: 0.8rem;
+      color: var(--text-faint);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Masthead -->
+  <header class="masthead">
+    <a href="/" class="masthead-brand">
+      <div class="masthead-seal">M</div>
+      <span class="masthead-title">Personal Digital Message</span>
+    </a>
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <span id="recipientBanner" class="recipient-tag">Private Delivery</span>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- Password Challenge Card (for protected links) -->
+    <div id="passwordView" class="password-card hidden">
+      <div class="portrait-wrapper">
+        <div class="masthead-seal" style="width: 48px; height: 48px; font-size: 1.4rem;">🔒</div>
+      </div>
+      <h2 style="font-family: var(--font-serif); font-size: 1.6rem; color: var(--text-ink); margin-bottom: 8px;">Private Message Access</h2>
+      <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 24px;">This personal message is protected by a password. Please enter the password provided to you.</p>
+      
+      <form id="passwordForm">
+        <input type="password" id="linkPasswordInput" class="password-input" placeholder="Enter access password" required>
+        <div id="passwordErrorMsg" class="alert-banner hidden" style="margin-bottom: 16px; margin-top: 0;"></div>
+        <button type="submit" id="unlockBtn" class="proceed-btn">
+          <span>Unlock &amp; Read Message</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Error Card -->
+    <div id="errorView" class="letter-card hidden" style="text-align: center; padding: 48px 24px;">
+      <h2 id="errorTitle" style="font-family: var(--font-serif); font-size: 1.6rem; color: var(--text-ink); margin-bottom: 12px;">Link Unavailable</h2>
+      <p id="errorDesc" style="color: var(--text-muted); font-size: 0.95rem;"></p>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loadingView" style="text-align: center; padding: 60px 20px; color: var(--text-muted);">
+      <div style="font-family: var(--font-serif); font-size: 1.15rem; font-style: italic;">Preparing your personal message...</div>
+    </div>
+
+    <!-- =====================================================================
+         RECIPIENT HOMEPAGE: SECTIONS A TO G (IN EXACT ORDER)
+         ===================================================================== -->
+    <section id="welcomeIntroCard" class="letter-card hidden">
+
+      <!-- A. Personal photograph uploaded by admin -->
+      <div class="portrait-wrapper">
+        <div class="portrait-frame">
+          <img id="welcomeIntroImg" class="portrait-img" src="/api/public/welcome-image" alt="Sender Portrait">
+        </div>
+      </div>
+
+      <!-- B. Heading -->
+      <h1 id="welcomeIntroHeading" class="letter-heading">
+        A Message Especially for You
+      </h1>
+
+      <!-- C. Welcome Description -->
+      <p id="welcomeIntroDesc" class="letter-desc">
+        I have something important and personal that I would like to share with you. Please take a moment to read this message before continuing.
+      </p>
+
+      <div class="letter-divider"></div>
+
+      <!-- D. Personal Written Letter -->
+      <div id="welcomeLetterBody" class="letter-body">
+        Dear Friend,
+
+I have prepared this personal digital letter and voice recordings especially for you. Some thoughts and feelings are too meaningful to be lost in hasty text messages, so I wanted to speak to you directly in my own voice.
+
+Take your time, read through the words below, and listen when you are in a quiet, comfortable space where you can reflect in peace.
+
+Warmly,
+Your Friend
+      </div>
+
+      <!-- E. Important Information and Disclaimer -->
+      <div class="disclaimer-card">
+        <div class="disclaimer-title">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          Important Information &amp; Disclaimer
+        </div>
+
+        <div class="disclaimer-item">
+          <svg class="disclaimer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <div id="welcomeDisclaimerText">
+            <strong>Private &amp; Confidential:</strong> This space is completely private between us. Anything you write in response will be delivered directly and securely to me.
+          </div>
+        </div>
+
+        <div class="disclaimer-item">
+          <svg class="disclaimer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path></svg>
+          <div id="welcomeInstructionsText">
+            <strong>Listening Instructions:</strong> Find a calm space without distractions. Headphones are recommended for optimal clarity. Recordings are delivered sequentially—finish each part to unlock the next chapter.
+          </div>
+        </div>
+      </div>
+
+      <!-- F. Reading Confirmation -->
+      <label class="confirmation-box" for="readConfirmCheckbox">
+        <input type="checkbox" id="readConfirmCheckbox" class="confirmation-checkbox">
+        <div>
+          <span class="confirmation-label">I Have Read and Understood</span>
+          <span class="confirmation-sub">Confirm that you have reviewed the written message and are ready to listen attentively.</span>
+        </div>
+      </label>
+
+      <!-- G. Continue / Proceed Button -->
+      <button id="startListeningBtn" class="proceed-btn" disabled>
+        <span>Proceed to Voice Recordings</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+      </button>
+
+      <div id="welcomeIntroThankYou" class="thank-you-badge">
+        Thank you for your time, care, and attentive listening.
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         SECTION 4: PERSONAL RECORDING EXPERIENCE (CLEAN PLAYER)
+         ===================================================================== -->
+    <section id="playerView" class="recording-card hidden">
+      
+      <div class="recording-header">
+        <div>
+          <div id="trackPartBadge" class="recording-part-indicator">Recording 01</div>
+          <h2 id="trackTitle" class="recording-title">Personal Voice Message</h2>
+        </div>
+        <div id="completionVerifiedTag" class="playback-status-pill status-completed hidden">
+          ✓ Verified Complete
+        </div>
+      </div>
+
+      <!-- Timeline Bar -->
+      <div class="timeline-container">
+        <div id="timeBarWrapper" class="timeline-bar-wrapper">
+          <div id="timeBarFill" class="timeline-fill"></div>
+        </div>
+        <div class="timeline-meta">
+          <span id="currentTimeText">0:00</span>
+          <span id="durationText">0:00</span>
+        </div>
+      </div>
+
+      <!-- Controls Row -->
+      <div class="controls-row">
+        
+        <div class="playback-btn-group">
+          <!-- Play / Pause Main Button -->
+          <button id="playPauseBtn" class="btn-play-main" aria-label="Play Recording">
+            <svg id="playIcon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            <svg id="pauseIcon" class="hidden" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="6" y="4" width="4" height="16"></rect>
+              <rect x="14" y="4" width="4" height="16"></rect>
+            </svg>
+          </button>
+
+          <!-- Replay from start -->
+          <button id="replayBtn" class="btn-control-secondary" title="Replay from beginning">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+            <span>Replay</span>
+          </button>
+
+          <!-- -10s skip -->
+          <button id="skipBackBtn" class="btn-control-secondary" title="Back 10 seconds">
+            -10s
+          </button>
+
+          <!-- +10s skip -->
+          <button id="skipFwdBtn" class="btn-control-secondary" title="Forward 10 seconds">
+            +10s
+          </button>
+        </div>
+
+        <!-- Playback Speed Controls: 1x, 1.5x, 2x (Capped strictly at 2x) -->
+        <div class="speed-control-group" id="speedPillsGroup">
+          <span class="speed-label">Speed</span>
+          <button type="button" class="speed-pill-btn active" data-speed="1.0">1x</button>
+          <button type="button" class="speed-pill-btn" data-speed="1.5">1.5x</button>
+          <button type="button" class="speed-pill-btn" data-speed="2.0">2x</button>
+        </div>
+
+      </div>
+
+      <!-- Hidden standard audio element -->
+      <audio id="audioStream" preload="metadata"></audio>
+
+      <!-- Anti-Seeking / Telemetry Verification Alert Banner -->
+      <div id="seekingAlertBanner" class="alert-banner hidden">
+        ⚠️ Please listen through the complete recording before submitting your response. Seeking directly to the end does not qualify as completed listening.
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         SECTION 5: UNDERSTANDING AND RESPONSE EXPERIENCE
+         ===================================================================== -->
+    <section id="understandingSection" class="response-card hidden">
+      
+      <!-- Submission Confirmation Banner -->
+      <div id="responseSuccessBanner" class="success-banner hidden">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        <div>
+          <strong>Your reflection has been delivered and saved.</strong>
+          <span style="display: block; font-size: 0.82rem; margin-top: 2px;">Thank you for sharing your thoughts. The next chapter is now unlocked.</span>
+        </div>
+      </div>
+
+      <h3 id="understandingQuestionText" class="response-question-title">
+        What did you understand from my message?
+      </h3>
+      <p class="response-question-sub">
+        Please share your thoughts and reflections in your own words. Take as much space as you need.
+      </p>
+
+      <form id="understandingForm">
+        
+        <!-- Textarea input container -->
+        <div id="responseInputContainer">
+          <textarea 
+            id="responseTextarea" 
+            class="response-textarea" 
+            placeholder="Write what you understood from this recording in your own words..."
+            required></textarea>
+          
+          <div class="response-meta-row">
+            <span id="responseWordCount">0 words</span>
+            <span>Your words are private and shared only with me.</span>
+          </div>
+        </div>
+
+        <!-- Review Before Final Submit Preview Box -->
+        <div id="responsePreviewBox" class="preview-stationery-box hidden">
+          <div class="preview-stationery-header">Review Your Reflection Before Submitting:</div>
+          <div id="previewResponseContent" class="preview-stationery-content"></div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="response-actions">
+          <button type="button" id="reviewResponseBtn" class="btn-submit-response">
+            <span>Review Response</span>
+          </button>
+
+          <button type="button" id="editResponseBtn" class="btn-edit-response hidden">
+            ✏️ Edit Response
+          </button>
+
+          <button type="submit" id="submitResponseBtn" class="btn-submit-response hidden">
+            <span>Confirm &amp; Send Response</span>
+          </button>
+        </div>
+
+      </form>
+
+      <!-- Next Lesson Unlocked Notice -->
+      <div id="nextLessonUnlockBanner" class="next-unlock-card hidden">
+        <h4 class="next-unlock-title">Next Chapter Unlocked</h4>
+        <p id="nextLessonTitle" class="next-unlock-desc">Chapter 2 is now ready for you to listen.</p>
+        <button type="button" id="nextLessonBtn" class="btn-submit-response">
+          <span>Proceed to Next Recording &rarr;</span>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- =====================================================================
+         SECTION 6: SEQUENTIAL CHAPTERS / RECORDINGS LIST
+         ===================================================================== -->
+    <section id="sequentialJourneyCard" class="journey-card hidden">
+      <div class="journey-header">
+        <span class="journey-title">Sequential Recordings</span>
+        <span id="journeyProgressBadge" class="journey-badge">0 of 0 Completed</span>
+      </div>
+      <div id="sequenceListContainer" class="journey-list">
+        <!-- Rendered dynamically via listen.js -->
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>AudioFlow &bull; Private Personal Delivery &bull; Protected &amp; Confidential</p>
+  </footer>
+
+  <script src="/js/listen.js"></script>
+</body>
+</html>
