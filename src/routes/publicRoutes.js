@@ -775,16 +775,6 @@ router.post('/api/listen/:slug/response', async (req, res) => {
  */
 router.get('/api/public/sequence-stream/:audioId', async (req, res) => {
   const { audioId } = req.params;
-  const sessionId = req.query.sessionId || req.sessionID || 'anonymous';
-
-  // Verify that the requested recording is unlocked or completed for this session
-  const isUnlocked = dashboardService.isAudioUnlocked(audioId, sessionId);
-  if (!isUnlocked) {
-    return res.status(403).json({
-      error: 'Locked Recording',
-      message: 'This recording is locked. Complete the previous recording and submit your reflection first.'
-    });
-  }
 
   const audio = dashboardService.getAudioById(audioId);
   if (!audio) {

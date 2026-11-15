@@ -944,7 +944,6 @@ function isPlaybackVerified(audioId, sessionId) {
 
 function getAudioSequence(sessionId) {
   const audios = getSortedAudios();
-  let previousCompletedAndResponded = true;
 
   return audios.map((audio, index) => {
     const partNumber = index + 1;
@@ -953,19 +952,7 @@ function getAudioSequence(sessionId) {
     const hasResponse = !!response;
     const isCompleted = progress.playbackCompleted && hasResponse;
 
-    let status = 'locked';
-    if (index === 0) {
-      status = isCompleted ? 'completed' : 'unlocked';
-    } else {
-      if (previousCompletedAndResponded) {
-        status = isCompleted ? 'completed' : 'unlocked';
-      } else {
-        status = 'locked';
-      }
-    }
-
-    // Update flag for next iteration in sequence
-    previousCompletedAndResponded = isCompleted;
+    const status = isCompleted ? 'completed' : 'unlocked';
 
     const link = dataStore.sharedLinks.find(l => l.audioId === audio.id && l.status === 'active' && (!l.expiresAt || new Date(l.expiresAt) > new Date()));
 
@@ -979,24 +966,21 @@ function getAudioSequence(sessionId) {
       durationSeconds: audio.durationSeconds || parseDurationToSeconds(audio.duration),
       understandingQuestion: audio.understandingQuestion,
       partNumber,
-      status, // 'completed' | 'unlocked' | 'locked'
-      isUnlocked: status === 'unlocked' || status === 'completed',
+      status, // 'completed' | 'unlocked'
+      isUnlocked: true,
       isCompleted,
       hasResponse,
       playbackCompleted: progress.playbackCompleted,
       currentTime: progress.currentTime || 0,
       progressPercent: progress.progressPercent || 0,
       slug: link ? link.slug : null,
-      streamUrl: status !== 'locked' ? `/api/public/sequence-stream/${audio.id}` : null
+      streamUrl: `/api/public/sequence-stream/${audio.id}`
     };
   });
 }
 
 function isAudioUnlocked(audioId, sessionId) {
-  const sequence = getAudioSequence(sessionId);
-  const item = sequence.find(s => s.audioId === audioId || s.id === audioId);
-  if (!item) return false;
-  return item.status === 'unlocked' || item.status === 'completed';
+  return true;
 }
 
 function recordListeningProgress({ audioId, recipientId, sessionId, linkSlug, currentTime, durationSeconds, playbackSpeed, wallClockElapsed, ended, forceComplete }) {

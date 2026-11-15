@@ -279,7 +279,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Set stream URL
     if (audio) {
-      audio.src = `/api/public/sequence-stream/${activeAudioId}`;
+      const sid = getClientSessionId();
+      audio.src = `/api/public/sequence-stream/${activeAudioId}?sessionId=${encodeURIComponent(sid)}`;
       audio.playbackRate = currentSpeed;
     }
 
@@ -321,9 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const isCurrent = itemId === activeAudioId;
       const isUnlocked = item.isUnlocked || item.status === 'unlocked' || item.status === 'completed';
 
-      let statusBadge = '';
-      let itemClass = '';
-      let clickAttr = '';
+      clickAttr = `onclick="window.switchAudioPart('${itemId}')"`;
 
       if (isCompleted) {
         itemClass = 'completed';
@@ -332,7 +331,6 @@ document.addEventListener('DOMContentLoaded', () => {
             ✓ Completed &bull; Replay
           </span>
         `;
-        clickAttr = `onclick="window.switchAudioPart('${itemId}')"`;
       } else if (isCurrent) {
         itemClass = 'active';
         statusBadge = `
@@ -340,25 +338,17 @@ document.addEventListener('DOMContentLoaded', () => {
             ● Playing Now
           </span>
         `;
-      } else if (isUnlocked) {
+      } else {
         itemClass = 'unlocked';
         statusBadge = `
           <span style="font-size: 0.78rem; color: #8a704c; font-weight: 600;">
-            ▶ Unlocked
-          </span>
-        `;
-        clickAttr = `onclick="window.switchAudioPart('${itemId}')"`;
-      } else {
-        itemClass = 'locked';
-        statusBadge = `
-          <span style="font-size: 0.78rem; color: #94a3b8; font-weight: 500;">
-            🔒 Locked
+            ▶ Play Part
           </span>
         `;
       }
 
       return `
-        <div class="chapter-item ${itemClass}" ${clickAttr} style="cursor: ${isUnlocked || isCompleted ? 'pointer' : 'not-allowed'};">
+        <div class="chapter-item ${itemClass}" ${clickAttr} style="cursor: pointer;">
           <div class="chapter-left">
             <div class="chapter-num">${item.partNumber || 1}</div>
             <div>
@@ -381,17 +371,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const item = currentSequence.find(s => (s.id || s.audioId) === audioId);
     if (!item) return;
 
-    const isUnlocked = item.isUnlocked || item.status === 'unlocked' || item.status === 'completed';
-    if (!isUnlocked && !item.hasResponse) {
-      alert(`Recording 0${item.partNumber} is locked. Please listen through Recording 0${item.partNumber - 1} and submit your reflection first.`);
-      return;
-    }
-
     loadActiveTrack(item);
     if (playerView) {
       playerView.classList.remove('hidden');
       playerView.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+    if (audio) {
+      audio.play().catch(e => console.log('Playback start notice:', e));
+    }
+  };
     if (audio) {
       audio.play().catch(e => console.log('Auto-play notice:', e));
     }
