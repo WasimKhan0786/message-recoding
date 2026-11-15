@@ -137,6 +137,38 @@
       color: var(--text-ink);
     }
 
+    /* Top Language Toggle Bar (English <-> हिन्दी) */
+    .lang-toggle-bar {
+      display: inline-flex;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-accent);
+      border-radius: 20px;
+      padding: 2px;
+      gap: 2px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .lang-toggle-btn {
+      background: transparent;
+      border: none;
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding: 3px 10px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      line-height: 1.2;
+    }
+    .lang-toggle-btn:hover {
+      color: var(--text-ink);
+    }
+    .lang-toggle-btn.active {
+      background: var(--accent-navy);
+      color: #ffffff;
+      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.2);
+    }
+
     /* Page Container */
     main {
       width: 100%;
@@ -905,10 +937,15 @@
   <header class="masthead">
     <a href="/" class="masthead-brand">
       <div class="masthead-seal">M</div>
-      <span class="masthead-title">Personal Digital Message</span>
+      <span class="masthead-title" id="mastheadTitle">Personal Digital Message</span>
     </a>
-    <div style="display: flex; align-items: center; gap: 14px;">
-      <span class="masthead-pill">Private Delivery</span>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <!-- Language Toggle Bar (English <-> हिन्दी) -->
+      <div class="lang-toggle-bar" id="langToggleBar" role="group" aria-label="Language Selector" title="Change Language / भाषा बदलें">
+        <button type="button" id="langBtnEn" class="lang-toggle-btn active" data-lang="en">English</button>
+        <button type="button" id="langBtnHi" class="lang-toggle-btn" data-lang="hi">हिन्दी</button>
+      </div>
+      <span class="masthead-pill" id="mastheadPill">Private Delivery</span>
       <a href="/login" class="nav-admin-link">Admin</a>
     </div>
   </header>
@@ -953,9 +990,9 @@ Your Friend
 
       <!-- E. Important Information and Disclaimer -->
       <div class="disclaimer-card">
-        <div class="disclaimer-title">
+        <div class="disclaimer-title" id="welcomeDisclaimerTitle">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-          Important Information &amp; Disclaimer
+          <span id="disclaimerTitleText">Important Information &amp; Disclaimer</span>
         </div>
 
         <div class="disclaimer-item">
@@ -977,14 +1014,14 @@ Your Friend
       <label class="confirmation-box" for="readConfirmCheckbox">
         <input type="checkbox" id="readConfirmCheckbox" class="confirmation-checkbox">
         <div>
-          <span class="confirmation-label">I Have Read and Understood</span>
-          <span class="confirmation-sub">Confirm that you have reviewed the written message and are ready to listen attentively.</span>
+          <span class="confirmation-label" id="readConfirmLabel">I Have Read and Understood</span>
+          <span class="confirmation-sub" id="readConfirmSub">Confirm that you have reviewed the written message and are ready to listen attentively.</span>
         </div>
       </label>
 
       <!-- G. Continue / Proceed Button -->
       <button id="startListeningBtn" class="proceed-btn" disabled>
-        <span>Proceed to Voice Recordings</span>
+        <span id="startListeningBtnText">Proceed to Voice Recordings</span>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
       </button>
 
@@ -1103,28 +1140,28 @@ Your Friend
           
           <div class="response-meta-row">
             <span id="responseWordCount">0 words</span>
-            <span>Your words are private and shared only with me.</span>
+            <span id="responsePrivacyNote">Your words are private and shared only with me.</span>
           </div>
         </div>
 
         <!-- Review Before Final Submit Preview Box -->
         <div id="responsePreviewBox" class="preview-stationery-box hidden">
-          <div class="preview-stationery-header">Review Your Reflection Before Submitting:</div>
+          <div class="preview-stationery-header" id="previewStationeryHeader">Review Your Reflection Before Submitting:</div>
           <div id="previewResponseContent" class="preview-stationery-content"></div>
         </div>
 
         <!-- Action Buttons -->
         <div class="response-actions">
           <button type="button" id="reviewResponseBtn" class="btn-submit-response">
-            <span>Review Response</span>
+            <span id="reviewResponseBtnText">Review Response</span>
           </button>
 
           <button type="button" id="editResponseBtn" class="btn-edit-response hidden">
-            ✏️ Edit Response
+            <span id="editResponseBtnText">✏️ Edit Response</span>
           </button>
 
           <button type="submit" id="submitResponseBtn" class="btn-submit-response hidden">
-            <span>Confirm &amp; Send Response</span>
+            <span id="submitResponseBtnText">Confirm &amp; Send Response</span>
           </button>
         </div>
 
@@ -1132,10 +1169,10 @@ Your Friend
 
       <!-- Next Lesson Unlocked Notice -->
       <div id="nextLessonUnlockBanner" class="next-unlock-card hidden">
-        <h4 class="next-unlock-title">Next Chapter Unlocked</h4>
+        <h4 class="next-unlock-title" id="nextUnlockTitle">Next Chapter Unlocked</h4>
         <p id="nextLessonTitle" class="next-unlock-desc">Chapter 2 is now ready for you to listen.</p>
         <button type="button" id="nextLessonBtn" class="btn-submit-response">
-          <span>Proceed to Next Recording &rarr;</span>
+          <span id="nextLessonBtnText">Proceed to Next Recording &rarr;</span>
         </button>
       </div>
 
@@ -1146,7 +1183,7 @@ Your Friend
          ===================================================================== -->
     <section id="sequentialJourneyCard" class="journey-card hidden">
       <div class="journey-header">
-        <span class="journey-title">Sequential Recordings</span>
+        <span class="journey-title" id="journeyHeaderTitle">Sequential Recordings</span>
         <span id="journeyProgressBadge" class="journey-badge">0 of 0 Completed</span>
       </div>
       <div id="sequenceListContainer" class="journey-list">

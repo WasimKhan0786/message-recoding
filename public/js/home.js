@@ -82,6 +82,175 @@ document.addEventListener('DOMContentLoaded', () => {
   let progressInterval = null;
   let hasRevealedUnderstanding = false;
   let hasConfirmedRead = false;
+  let cachedWelcomeSettings = null;
+
+  // Language Translations (English <-> हिन्दी)
+  let currentLanguage = localStorage.getItem('audioflow_language') || 'en';
+
+  const i18n = {
+    en: {
+      mastheadTitle: "Personal Digital Message",
+      mastheadPill: "Private Delivery",
+      welcomeHeading: "A Message Especially for You",
+      welcomeDesc: "I have something important and personal that I would like to share with you. Please take a moment to read this message before continuing.",
+      letterBody: "Dear Friend,\n\nI have prepared this personal digital letter and voice recordings especially for you. Some thoughts and feelings are too meaningful to be lost in hasty text messages, so I wanted to speak to you directly in my own voice.\n\nTake your time, read through the words below, and listen when you are in a quiet, comfortable space where you can reflect in peace.\n\nWarmly,\nYour Friend",
+      disclaimerHeader: "Important Information & Disclaimer",
+      disclaimerText: "<strong>Private &amp; Confidential:</strong> This space is completely private between us. Anything you write in response will be delivered directly and securely to me.",
+      instructionsText: "<strong>Listening Instructions:</strong> Find a calm space without distractions. Headphones are recommended for optimal clarity. Both recordings are available sequentially—listen and share your reflection.",
+      confirmLabel: "I Have Read and Understood",
+      confirmSub: "Confirm that you have reviewed the written message and are ready to listen attentively.",
+      proceedBtn: "Proceed to Voice Recordings",
+      thankYou: "Thank you for your time, care, and attentive listening.",
+      speedLabel: "Speed",
+      trackBadge: "Recording",
+      trackTitle01: "Recording 01 - Personal Voice Message",
+      trackTitle02: "Recording 02 - Personal Voice Message",
+      questionSub: "Please share your thoughts and reflections in your own words. Take as much space as you need.",
+      privacyNote: "Your words are private and shared only with me.",
+      reviewBtn: "Review Response",
+      editBtn: "✏️ Edit Response",
+      submitBtn: "Confirm &amp; Send Response",
+      previewHeader: "Review Your Reflection Before Submitting:",
+      successTitle: "Your reflection has been delivered and saved.",
+      successSub: "Thank you for sharing your thoughts. The next chapter is now unlocked.",
+      nextUnlockTitle: "Next Chapter Unlocked",
+      nextUnlockBtn: "Proceed to Next Recording &rarr;",
+      journeyHeaderTitle: "Sequential Recordings",
+      journeyProgress: (completed, total) => `${completed} of ${total} Completed`,
+      wordCountSuffix: (n) => `${n} word${n === 1 ? '' : 's'}`,
+      playingNow: "● Playing Now",
+      completedReplay: "✓ Completed &bull; Replay",
+      playPart: "▶ Play Part"
+    },
+    hi: {
+      mastheadTitle: "व्यक्तिगत डिजिटल संदेश",
+      mastheadPill: "गोपनीय संदेश",
+      welcomeHeading: "विशेष रूप से आपके लिए एक संदेश",
+      welcomeDesc: "मेरे पास आपके साथ साझा करने के लिए कुछ महत्वपूर्ण और व्यक्तिगत बातें हैं। आगे बढ़ने से पहले कृपया इस संदेश को ध्यान से पढ़ें।",
+      letterBody: "प्रिय मित्र,\n\nमैंने यह व्यक्तिगत डिजिटल पत्र और वॉयस रिकॉर्डिंग विशेष रूप से आपके लिए तैयार की हैं। कुछ विचार और भावनाएं इतनी महत्वपूर्ण होती हैं कि उन्हें जल्दबाजी में भेजे गए टेक्स्ट मैसेज में बयां नहीं किया जा सकता, इसलिए मैं आपसे सीधे अपनी आवाज़ में बात करना चाहता था।\n\nकृपया अपना समय लें, नीचे लिखे शब्दों को पढ़ें, और जब आप किसी शांत और एकांत स्थान पर हों तब इसे सुनें ताकि आप सुकून से इस पर विचार कर सकें।\n\nसस्नेह,\nआपका मित्र",
+      disclaimerHeader: "महत्वपूर्ण जानकारी एवं निर्देश",
+      disclaimerText: "<strong>निजी एवं गोपनीय:</strong> यह स्थान पूरी तरह से निजी है। आपके द्वारा लिखा गया कोई भी जवाब सीधे और सुरक्षित रूप से केवल मुझ तक पहुंचेगा।",
+      instructionsText: "<strong>सुनने के निर्देश:</strong> बिना किसी शोर-शराबे वाले शांत स्थान पर बैठें। स्पष्ट आवाज़ के लिए हेडफ़ोन की सलाह दी जाती है। रिकॉर्डिंग को ध्यान से सुनें और अपनी समझ साझा करें।",
+      confirmLabel: "मैंने यह संदेश पढ़ और समझ लिया है",
+      confirmSub: "पुष्टि करें कि आपने लिखा हुआ पत्र पढ़ लिया है और अब आवाज़ सुनने के लिए तैयार हैं।",
+      proceedBtn: "आवाज़ रिकॉर्डिंग सुनने के लिए आगे बढ़ें",
+      thankYou: "अपना कीमती समय, परवाह और ध्यान से सुनने के लिए आपका बहुत-बहुत धन्यवाद।",
+      speedLabel: "स्पीड",
+      trackBadge: "रिकॉर्डिंग",
+      trackTitle01: "रिकॉर्डिंग 01 - व्यक्तिगत आवाज़ संदेश",
+      trackTitle02: "रिकॉर्डिंग 02 - व्यक्तिगत आवाज़ संदेश",
+      questionSub: "कृपया अपनी सोच और विचार अपने शब्दों में साझा करें। आप जितना चाहें उतना लिख सकते हैं।",
+      privacyNote: "आपके शब्द पूरी तरह गोपनीय हैं और केवल मेरे साथ साझा होंगे।",
+      reviewBtn: "जवाब की समीक्षा करें",
+      editBtn: "✏️ जवाब बदलें",
+      submitBtn: "पुष्टि करें और जवाब भेजें",
+      previewHeader: "अंतिम रूप से भेजने से पहले अपने जवाब की समीक्षा करें:",
+      successTitle: "आपका जवाब सफलतापूर्वक भेज दिया गया है।",
+      successSub: "अपने विचार साझा करने के लिए धन्यवाद। अब आप अगला भाग सुन सकते हैं।",
+      nextUnlockTitle: "अगला भाग अनलॉक हो गया",
+      nextUnlockBtn: "अगली रिकॉर्डिंग सुनने के लिए आगे बढ़ें &rarr;",
+      journeyHeaderTitle: "क्रमवार रिकॉर्डिंग्स",
+      journeyProgress: (completed, total) => `${total} में से ${completed} पूर्ण`,
+      wordCountSuffix: (n) => `${n} शब्द`,
+      playingNow: "● अभी चल रहा है",
+      completedReplay: "✓ पूर्ण &bull; दोबारा सुनें",
+      playPart: "▶ सुनें"
+    }
+  };
+
+  function applyLanguage(lang) {
+    currentLanguage = lang;
+    localStorage.setItem('audioflow_language', lang);
+
+    const t = i18n[lang] || i18n.en;
+
+    // Toggle button styling
+    const btnEn = document.getElementById('langBtnEn');
+    const btnHi = document.getElementById('langBtnHi');
+    if (btnEn && btnHi) {
+      if (lang === 'hi') {
+        btnHi.classList.add('active');
+        btnEn.classList.remove('active');
+      } else {
+        btnEn.classList.add('active');
+        btnHi.classList.remove('active');
+      }
+    }
+
+    // Masthead
+    const mTitle = document.getElementById('mastheadTitle');
+    if (mTitle) mTitle.textContent = t.mastheadTitle;
+    const mPill = document.getElementById('mastheadPill');
+    if (mPill) mPill.textContent = t.mastheadPill;
+
+    // Welcome Card
+    if (welcomeHeading) welcomeHeading.textContent = t.welcomeHeading;
+    if (welcomeDesc) welcomeDesc.textContent = t.welcomeDesc;
+    if (welcomeLetterBody) welcomeLetterBody.textContent = t.letterBody;
+    const discTitle = document.getElementById('disclaimerTitleText');
+    if (discTitle) discTitle.textContent = t.disclaimerHeader;
+    if (welcomeDisclaimerText) welcomeDisclaimerText.innerHTML = t.disclaimerText;
+    if (welcomeInstructionsText) welcomeInstructionsText.innerHTML = t.instructionsText;
+
+    const cLabel = document.getElementById('readConfirmLabel');
+    if (cLabel) cLabel.textContent = t.confirmLabel;
+    const cSub = document.getElementById('readConfirmSub');
+    if (cSub) cSub.textContent = t.confirmSub;
+    const pBtnText = document.getElementById('startListeningBtnText');
+    if (pBtnText) pBtnText.textContent = t.proceedBtn;
+    if (welcomeThankYou) welcomeThankYou.textContent = t.thankYou;
+
+    // Player Elements
+    const sLabel = document.getElementById('speedPillsLabel');
+    if (sLabel) sLabel.textContent = t.speedLabel;
+    if (trackPartBadge) {
+      trackPartBadge.textContent = `${t.trackBadge} 0${activePartNumber}`;
+    }
+
+    // Response Elements
+    const qSub = document.getElementById('responseQuestionSub');
+    if (qSub) qSub.textContent = t.questionSub;
+    const pNote = document.getElementById('responsePrivacyNote');
+    if (pNote) pNote.textContent = t.privacyNote;
+    const revText = document.getElementById('reviewResponseBtnText');
+    if (revText) revText.textContent = t.reviewBtn;
+    const editText = document.getElementById('editResponseBtnText');
+    if (editText) editText.textContent = t.editBtn;
+    const subText = document.getElementById('submitResponseBtnText');
+    if (subText) subText.textContent = t.submitBtn;
+    const prevHeader = document.getElementById('previewStationeryHeader');
+    if (prevHeader) prevHeader.textContent = t.previewHeader;
+
+    const sTitle = document.getElementById('responseSuccessTitle');
+    if (sTitle) sTitle.textContent = t.successTitle;
+    const sSub = document.getElementById('responseSuccessSub');
+    if (sSub) sSub.textContent = t.successSub;
+    const nTitle = document.getElementById('nextUnlockTitle');
+    if (nTitle) nTitle.textContent = t.nextUnlockTitle;
+    const nBtnText = document.getElementById('nextLessonBtnText');
+    if (nBtnText) nBtnText.innerHTML = t.nextUnlockBtn;
+
+    const jTitle = document.getElementById('journeyHeaderTitle');
+    if (jTitle) jTitle.textContent = t.journeyHeaderTitle;
+
+    // Word count in current language
+    if (responseTextarea) {
+      updateWordCount(responseTextarea.value || '');
+    }
+
+    // Refresh journey list for language updates
+    renderSequenceJourney(currentSequence);
+  }
+
+  function initLanguageSwitcher() {
+    const btnEn = document.getElementById('langBtnEn');
+    const btnHi = document.getElementById('langBtnHi');
+
+    if (btnEn) btnEn.addEventListener('click', () => applyLanguage('en'));
+    if (btnHi) btnHi.addEventListener('click', () => applyLanguage('hi'));
+
+    applyLanguage(currentLanguage);
+  }
 
   function getClientSessionId() {
     let sid = localStorage.getItem('audioflow_client_sid');
@@ -93,6 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Initialize
+  initLanguageSwitcher();
   initWelcomeListeners();
   initSpeedControls();
   fetchHomepageSequence();
@@ -378,10 +548,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (audio) {
       audio.play().catch(e => console.log('Playback start notice:', e));
-    }
-  };
-    if (audio) {
-      audio.play().catch(e => console.log('Auto-play notice:', e));
     }
   };
 
@@ -733,7 +899,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateWordCount(str) {
     if (!responseWordCount) return;
     const words = (str || '').trim().split(/\s+/).filter(Boolean).length;
-    responseWordCount.textContent = `${words} word${words === 1 ? '' : 's'}`;
+    const t = i18n[currentLanguage] || i18n.en;
+    responseWordCount.textContent = t.wordCountSuffix(words);
   }
 
   function escapeHtml(str) {
