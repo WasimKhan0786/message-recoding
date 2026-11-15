@@ -364,7 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Question
-    const qText = item.understandingQuestion || 'What did you understand from my message?';
+    const qText = item.understandingQuestion || 'Bhai meri pura baat aur recoding sun ligiye than aapko jo aacha lage aap bata sakte hai, aapko lagta hai hum ushke kabil nhi hai toh... 2 mahine laga isko banane me khuch soch kr hi devlop kiya hai aapko bhi pata hoga mehnat kisko bolte hai.';
     if (understandingQuestionText) {
       understandingQuestionText.textContent = qText;
     }
