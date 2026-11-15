@@ -881,8 +881,9 @@ function getPlaybackProgress(audioId, sessionId) {
   const key = `${sessId}:${audioId}`;
   const tracker = playbackTrackers.get(key);
   if (tracker) {
-    const isCompleted = tracker.playbackCompleted || 
-      (tracker.durationSeconds > 0 && (tracker.maxTimeReached >= (tracker.durationSeconds * 0.85) || tracker.listenedSeconds >= (tracker.durationSeconds * 0.40)) && tracker.listenedSeconds >= 8);
+    const isCompleted = Boolean(tracker.playbackCompleted) || 
+      (tracker.durationSeconds > 0 && (tracker.maxTimeReached >= (tracker.durationSeconds * 0.98) || tracker.listenedSeconds >= (tracker.durationSeconds * 0.95)));
+    const calculatedPct = isCompleted ? 100 : (tracker.durationSeconds > 0 ? Math.min(99, Math.round((tracker.listenedSeconds / tracker.durationSeconds) * 100)) : 0);
     return {
       audioId,
       sessionId: sessId,
@@ -890,14 +891,15 @@ function getPlaybackProgress(audioId, sessionId) {
       durationSeconds: tracker.durationSeconds,
       listenedSeconds: tracker.listenedSeconds,
       playbackCompleted: isCompleted,
-      progressPercent: tracker.durationSeconds > 0 ? Math.min(100, Math.round((tracker.listenedSeconds / tracker.durationSeconds) * 100)) : 0
+      progressPercent: calculatedPct
     };
   }
 
   const stored = dataStore.listeningProgress.find(p => p.audioId === audioId && p.sessionId === sessId);
   if (stored) {
     const isCompleted = Boolean(stored.playbackCompleted) || 
-      (stored.durationSeconds > 0 && (stored.currentTime >= (stored.durationSeconds * 0.85) || stored.listenedSeconds >= (stored.durationSeconds * 0.40)) && stored.listenedSeconds >= 8);
+      (stored.durationSeconds > 0 && (stored.currentTime >= (stored.durationSeconds * 0.98) || stored.listenedSeconds >= (stored.durationSeconds * 0.95)));
+    const calculatedPct = isCompleted ? 100 : (stored.progressPercent || (stored.durationSeconds > 0 ? Math.min(99, Math.round((stored.listenedSeconds / stored.durationSeconds) * 100)) : 0));
     return {
       audioId,
       sessionId: sessId,
@@ -905,7 +907,7 @@ function getPlaybackProgress(audioId, sessionId) {
       durationSeconds: stored.durationSeconds || 0,
       listenedSeconds: stored.listenedSeconds || 0,
       playbackCompleted: isCompleted,
-      progressPercent: stored.progressPercent || 0
+      progressPercent: calculatedPct
     };
   }
 
@@ -934,7 +936,7 @@ function parseDurationToSeconds(durStr) {
 
 function isPlaybackVerified(audioId, sessionId) {
   const prog = getPlaybackProgress(audioId, sessionId);
-  if (prog.playbackCompleted === true) return true;
+  if (prog.playbackCompleted === true || prog.progressPercent >= 100) return true;
   // Also if progress has reached near the end with authentic listening
   if (prog.durationSeconds > 0 && (prog.currentTime >= (prog.durationSeconds * 0.85) || prog.listenedSeconds >= (prog.durationSeconds * 0.40)) && prog.listenedSeconds >= 8) {
     return true;
@@ -944,15 +946,21 @@ function isPlaybackVerified(audioId, sessionId) {
 
 function getAudioSequence(sessionId) {
   const audios = getSortedAudios();
+  let prevItemCompleted = true; // First audio is always unlocked
 
   return audios.map((audio, index) => {
     const partNumber = index + 1;
     const progress = getPlaybackProgress(audio.id, sessionId);
     const response = dataStore.responses.find(r => r.audioId === audio.id && r.sessionId === sessionId);
     const hasResponse = !!response;
-    const isCompleted = progress.playbackCompleted && hasResponse;
+    
+    // An audio is completed if verified complete, reached 100%, or response submitted
+    const isCompleted = Boolean(progress.playbackCompleted || progress.progressPercent >= 100 || (hasResponse && progress.progressPercent >= 80));
+    const isUnlocked = index === 0 ? true : prevItemCompleted;
+    const status = isCompleted ? 'completed' : (isUnlocked ? 'unlocked' : 'locked');
 
-    const status = isCompleted ? 'completed' : 'unlocked';
+    // Update prevItemCompleted for the next iteration
+    prevItemCompleted = isCompleted;
 
     const link = dataStore.sharedLinks.find(l => l.audioId === audio.id && l.status === 'active' && (!l.expiresAt || new Date(l.expiresAt) > new Date()));
 
@@ -966,13 +974,14 @@ function getAudioSequence(sessionId) {
       durationSeconds: audio.durationSeconds || parseDurationToSeconds(audio.duration),
       understandingQuestion: audio.understandingQuestion,
       partNumber,
-      status, // 'completed' | 'unlocked'
-      isUnlocked: true,
+      status, // 'completed' | 'unlocked' | 'locked'
+      isUnlocked,
       isCompleted,
       hasResponse,
-      playbackCompleted: progress.playbackCompleted,
+      playbackCompleted: isCompleted,
       currentTime: progress.currentTime || 0,
-      progressPercent: progress.progressPercent || 0,
+      progressPercent: isCompleted ? 100 : (progress.progressPercent || 0),
+      listenedSeconds: progress.listenedSeconds || 0,
       slug: link ? link.slug : null,
       streamUrl: `/api/public/sequence-stream/${audio.id}`
     };
@@ -980,7 +989,9 @@ function getAudioSequence(sessionId) {
 }
 
 function isAudioUnlocked(audioId, sessionId) {
-  return true;
+  const sequence = getAudioSequence(sessionId);
+  const item = sequence.find(s => s.id === audioId || s.audioId === audioId);
+  return item ? item.isUnlocked : true;
 }
 
 function recordListeningProgress({ audioId, recipientId, sessionId, linkSlug, currentTime, durationSeconds, playbackSpeed, wallClockElapsed, ended, forceComplete }) {
@@ -1047,15 +1058,17 @@ function recordListeningProgress({ audioId, recipientId, sessionId, linkSlug, cu
   // (1) Audio ended event, OR current position >= 85% of duration, OR within 5 seconds of the end
   // AND
   // (2) Not a raw bypass seek from 0s: has listened for at least 8 seconds (or at least 20% of duration, or ended with at least 5s)
-  const hasReachedEnd = isAudioEnded || currentPos >= (audioDuration * 0.85) || (audioDuration > 0 && Math.abs(currentPos - audioDuration) < 5);
-  const isAuthenticListening = tracker.listenedSeconds >= 8 || tracker.listenedSeconds >= (audioDuration * 0.20) || (isAudioEnded && tracker.listenedSeconds >= 5);
+  const hasReachedEnd = isAudioEnded || currentPos >= (audioDuration * 0.98) || (audioDuration > 0 && Math.abs(currentPos - audioDuration) < 3);
+  const isAuthenticListening = tracker.listenedSeconds >= (audioDuration * 0.95) || (isAudioEnded && tracker.listenedSeconds >= (audioDuration * 0.70));
 
   if (hasReachedEnd && isAuthenticListening) {
     tracker.playbackCompleted = true;
     if (!tracker.completedAt) tracker.completedAt = new Date().toISOString();
   }
 
-  const progressPercent = Math.min(100, Math.round((tracker.listenedSeconds / audioDuration) * 100));
+  const progressPercent = tracker.playbackCompleted 
+    ? 100 
+    : Math.min(99, Math.round((tracker.listenedSeconds / audioDuration) * 100));
 
   // Update in-memory dataStore.listeningProgress
   const existingProgIndex = dataStore.listeningProgress.findIndex(p => p.audioId === audioId && p.sessionId === tracker.sessionId);

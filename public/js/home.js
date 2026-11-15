@@ -118,9 +118,18 @@ document.addEventListener('DOMContentLoaded', () => {
       journeyHeaderTitle: "Sequential Recordings",
       journeyProgress: (completed, total) => `${completed} of ${total} Completed`,
       wordCountSuffix: (n) => `${n} word${n === 1 ? '' : 's'}`,
-      playingNow: "● Playing Now",
+      overallProgressTitle: "Overall Listening Progress",
+      overallProgressSummary: (pct, done, total) => `${pct}% Completed • ${done} of ${total} Finished`,
+      listenedText: "Listened",
+      completedText: "Completed",
+      unlockedNotice: "Unlocked",
+      lockedNotice: "Locked",
+      lockedDesc: "Complete Recording 01 first",
+      playingNowNotice: "Playing Now",
+      completedNotice: "Completed",
       completedReplay: "✓ Completed &bull; Replay",
-      playPart: "▶ Play Part"
+      playPart: "▶ Play Part",
+      lockedAlert: "Recording 02 is locked. Please listen through Recording 01 completely to unlock it."
     },
     hi: {
       mastheadTitle: "व्यक्तिगत डिजिटल संदेश",
@@ -152,9 +161,18 @@ document.addEventListener('DOMContentLoaded', () => {
       journeyHeaderTitle: "क्रमवार रिकॉर्डिंग्स",
       journeyProgress: (completed, total) => `${total} में से ${completed} पूर्ण`,
       wordCountSuffix: (n) => `${n} शब्द`,
-      playingNow: "● अभी चल रहा है",
+      overallProgressTitle: "कुल सुनने की प्रगति",
+      overallProgressSummary: (pct, done, total) => `${pct}% पूर्ण • ${total} में से ${done} समाप्त`,
+      listenedText: "सुना गया",
+      completedText: "पूर्ण",
+      unlockedNotice: "अनलॉक",
+      lockedNotice: "लॉक है",
+      lockedDesc: "पहले रिकॉर्डिंग 01 पूरी सुनें",
+      playingNowNotice: "अभी चल रहा है",
+      completedNotice: "पूर्ण",
       completedReplay: "✓ पूर्ण &bull; दोबारा सुनें",
-      playPart: "▶ सुनें"
+      playPart: "▶ सुनें",
+      lockedAlert: "रिकॉर्डिंग 02 अभी लॉक है। इसे खोलने के लिए कृपया पहले रिकॉर्डिंग 01 को पूरा सुनें।"
     }
   };
 
@@ -428,6 +446,11 @@ document.addEventListener('DOMContentLoaded', () => {
   function loadActiveTrack(item) {
     if (!item) return;
 
+    if (!item.isUnlocked) {
+      window.showLockedNotice(item.id || item.audioId);
+      return;
+    }
+
     activeAudioId = item.id || item.audioId;
     activePartNumber = item.partNumber || 1;
     hasRevealedUnderstanding = false;
@@ -440,12 +463,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (nextLessonUnlockBanner) nextLessonUnlockBanner.classList.add('hidden');
 
     // Recording metadata (Clean editorial labels)
+    const t = i18n[currentLanguage] || i18n.en;
     if (trackPartBadge) {
-      trackPartBadge.textContent = `Recording 0${activePartNumber}`;
+      trackPartBadge.textContent = `${t.trackBadge} 0${activePartNumber}`;
     }
     if (trackTitle) {
       trackTitle.textContent = item.title || 'Personal Voice Message';
     }
+
+    // Update player progress pill
+    updatePlayerProgressPill(item.progressPercent || 0, item.isCompleted || item.playbackCompleted);
 
     // Set stream URL
     if (audio) {
@@ -468,7 +495,75 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /**
-   * 5. Sequence Journey Chapters List
+   * 5. Overall Listening Progress Calculation & Rendering
+   */
+  function renderOverallProgress(sequence) {
+    if (!sequence || sequence.length === 0) return;
+    const t = i18n[currentLanguage] || i18n.en;
+
+    const totalAudios = sequence.length;
+    const totalPct = sequence.reduce((acc, it) => acc + (it.progressPercent || 0), 0);
+    const overallPct = Math.min(100, Math.round(totalPct / totalAudios));
+    const completedCount = sequence.filter(it => it.isCompleted || it.playbackCompleted || it.progressPercent >= 100).length;
+
+    const opTitle = document.getElementById('overallProgressTitle');
+    const opPct = document.getElementById('overallProgressPct');
+    const opFill = document.getElementById('overallProgressFill');
+    const opSub = document.getElementById('overallProgressSub');
+
+    if (opTitle) opTitle.textContent = t.overallProgressTitle;
+    if (opPct) opPct.textContent = `${overallPct}%`;
+    if (opFill) opFill.style.width = `${overallPct}%`;
+    if (opSub) opSub.textContent = t.overallProgressSummary(overallPct, completedCount, totalAudios);
+
+    if (journeyProgressBadge) {
+      journeyProgressBadge.textContent = t.journeyProgress(completedCount, totalAudios);
+    }
+  }
+
+  function updatePlayerProgressPill(pct, isCompleted) {
+    const pill = document.getElementById('playerProgressPill');
+    if (!pill) return;
+    const t = i18n[currentLanguage] || i18n.en;
+    const clamped = Math.min(100, Math.max(0, Math.round(pct || 0)));
+
+    if (isCompleted || clamped >= 100) {
+      pill.textContent = `✓ 100% ${t.completedText}`;
+      pill.classList.remove('status-progress');
+      pill.classList.add('status-completed');
+    } else {
+      pill.textContent = `${clamped}% ${t.listenedText}`;
+      pill.classList.add('status-progress');
+      pill.classList.remove('status-completed');
+    }
+  }
+
+  function updateLiveProgressDisplay(activeItem) {
+    if (!activeItem) return;
+    const t = i18n[currentLanguage] || i18n.en;
+    const pct = Math.min(100, Math.max(0, Math.round(activeItem.progressPercent || 0)));
+    const itemId = activeItem.id || activeItem.audioId;
+
+    // Find the specific chapter row on screen
+    const row = document.querySelector(`.chapter-item[data-audio-id="${itemId}"]`);
+    if (row) {
+      const fill = row.querySelector('.chapter-progress-fill');
+      const pctText = row.querySelector('.chapter-pct-text');
+      if (fill) fill.style.width = `${pct}%`;
+      if (pctText) {
+        if (activeItem.isCompleted || pct >= 100) {
+          pctText.textContent = `100% ${t.completedText}`;
+        } else {
+          pctText.textContent = `${pct}% ${t.listenedText}`;
+        }
+      }
+    }
+
+    renderOverallProgress(currentSequence);
+  }
+
+  /**
+   * 6. Sequence Journey Chapters List
    */
   function renderSequenceJourney(sequence) {
     if (!sequentialJourneyCard || !sequenceListContainer) return;
@@ -480,53 +575,76 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Counter badge
-    const completedCount = currentSequence.filter(s => s.hasResponse && s.playbackCompleted).length;
-    if (journeyProgressBadge) {
-      journeyProgressBadge.textContent = `${completedCount} of ${currentSequence.length} Completed`;
-    }
+    renderOverallProgress(currentSequence);
+
+    const t = i18n[currentLanguage] || i18n.en;
 
     sequenceListContainer.innerHTML = currentSequence.map((item) => {
-      const isCompleted = item.hasResponse && item.playbackCompleted;
+      const isCompleted = Boolean(item.isCompleted || item.playbackCompleted || item.progressPercent >= 100);
       const itemId = item.id || item.audioId;
       const isCurrent = itemId === activeAudioId;
-      const isUnlocked = item.isUnlocked || item.status === 'unlocked' || item.status === 'completed';
+      const isUnlocked = Boolean(item.isUnlocked);
+      const pct = Math.min(100, Math.max(0, Math.round(item.progressPercent || 0)));
 
-      clickAttr = `onclick="window.switchAudioPart('${itemId}')"`;
+      let statusBadge = '';
+      let itemClass = '';
+      let clickAttr = '';
+      let pctLabel = '';
 
       if (isCompleted) {
         itemClass = 'completed';
         statusBadge = `
-          <span style="font-size: 0.78rem; color: #166534; font-weight: 600;">
-            ✓ Completed &bull; Replay
+          <span style="font-size: 0.76rem; color: #166534; font-weight: 600; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 4px 10px; border-radius: 14px; white-space: nowrap;">
+            ✓ ${t.completedNotice} (100%)
           </span>
         `;
+        pctLabel = `100% ${t.completedText}`;
+        clickAttr = `onclick="window.switchAudioPart('${itemId}')"`;
       } else if (isCurrent) {
         itemClass = 'active';
         statusBadge = `
-          <span style="font-size: 0.78rem; color: #0f172a; font-weight: 700;">
-            ● Playing Now
+          <span style="font-size: 0.76rem; color: #0f172a; font-weight: 700; background: #f1f5f9; border: 1px solid var(--border-accent); padding: 4px 10px; border-radius: 14px; white-space: nowrap;">
+            ● ${t.playingNowNotice}
           </span>
         `;
-      } else {
+        pctLabel = `${pct}% ${t.listenedText}`;
+        clickAttr = `onclick="window.switchAudioPart('${itemId}')"`;
+      } else if (isUnlocked) {
         itemClass = 'unlocked';
         statusBadge = `
-          <span style="font-size: 0.78rem; color: #8a704c; font-weight: 600;">
-            ▶ Play Part
+          <span style="font-size: 0.76rem; color: #8a704c; font-weight: 600; background: var(--accent-warm-light); border: 1px solid var(--border-light); padding: 4px 10px; border-radius: 14px; white-space: nowrap;">
+            ▶ ${t.unlockedNotice} (${pct}%)
           </span>
         `;
+        pctLabel = `${pct}% ${t.listenedText}`;
+        clickAttr = `onclick="window.switchAudioPart('${itemId}')"`;
+      } else {
+        itemClass = 'locked';
+        statusBadge = `
+          <span style="font-size: 0.76rem; color: #94a3b8; font-weight: 500; background: #f8fafc; border: 1px solid var(--border-light); padding: 4px 10px; border-radius: 14px; white-space: nowrap;">
+            🔒 ${t.lockedNotice}
+          </span>
+        `;
+        pctLabel = `0% &bull; ${t.lockedDesc}`;
+        clickAttr = `onclick="window.showLockedNotice('${itemId}')"`;
       }
 
       return `
-        <div class="chapter-item ${itemClass}" ${clickAttr} style="cursor: pointer;">
-          <div class="chapter-left">
+        <div class="chapter-item ${itemClass}" data-audio-id="${itemId}" ${clickAttr} style="cursor: ${isUnlocked ? 'pointer' : 'not-allowed'};">
+          <div class="chapter-left" style="flex: 1; min-width: 0;">
             <div class="chapter-num">${item.partNumber || 1}</div>
-            <div>
+            <div style="flex: 1; min-width: 0;">
               <div class="chapter-name">${escapeHtml(item.title)}</div>
-              <div class="chapter-meta">Recording 0${item.partNumber || 1} &bull; ${escapeHtml(item.duration || 'Voice Recording')}</div>
+              <div class="chapter-meta">${t.trackBadge} 0${item.partNumber || 1} &bull; ${escapeHtml(item.duration || 'Voice Recording')}</div>
+              <div class="chapter-progress-box">
+                <div class="chapter-progress-track">
+                  <div class="chapter-progress-fill" style="width: ${pct}%;"></div>
+                </div>
+                <span class="chapter-pct-text">${pctLabel}</span>
+              </div>
             </div>
           </div>
-          <div>${statusBadge}</div>
+          <div style="margin-left: 12px; flex-shrink: 0;">${statusBadge}</div>
         </div>
       `;
     }).join('');
@@ -541,6 +659,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const item = currentSequence.find(s => (s.id || s.audioId) === audioId);
     if (!item) return;
 
+    if (!item.isUnlocked) {
+      window.showLockedNotice(audioId);
+      return;
+    }
+
     loadActiveTrack(item);
     if (playerView) {
       playerView.classList.remove('hidden');
@@ -551,8 +674,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  // Global handler for locked recording notice
+  window.showLockedNotice = function(audioId) {
+    const t = i18n[currentLanguage] || i18n.en;
+    if (seekingAlertBanner) {
+      seekingAlertBanner.textContent = `🔒 ${t.lockedAlert}`;
+      seekingAlertBanner.classList.remove('hidden');
+      seekingAlertBanner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } else {
+      alert(t.lockedAlert);
+    }
+  };
+
   /**
-   * 6. Player Control Bindings
+   * 7. Player Control Bindings
    */
   function bindPlayerControls() {
     if (playPauseBtn) playPauseBtn.addEventListener('click', togglePlay);
@@ -594,17 +729,66 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pauseIcon) pauseIcon.classList.add('hidden');
         if (timeBarFill) timeBarFill.style.width = '100%';
         if (completionVerifiedTag) completionVerifiedTag.classList.remove('hidden');
+
+        // Mark active recording as completed & 100%
+        const activeItem = currentSequence.find(s => (s.id || s.audioId) === activeAudioId);
+        if (activeItem) {
+          activeItem.isCompleted = true;
+          activeItem.playbackCompleted = true;
+          activeItem.progressPercent = 100;
+        }
+
+        // Automatically unlock Recording 02
+        const nextIndex = currentSequence.findIndex(s => (s.id || s.audioId) === activeAudioId) + 1;
+        if (nextIndex < currentSequence.length) {
+          currentSequence[nextIndex].isUnlocked = true;
+          if (currentSequence[nextIndex].status === 'locked') {
+            currentSequence[nextIndex].status = 'unlocked';
+          }
+        }
+
+        renderSequenceJourney(currentSequence);
+        updatePlayerProgressPill(100, true);
         sendTelemetryProgress(true, true);
         revealUnderstandingSection();
       });
 
       audio.addEventListener('timeupdate', () => {
         if (!audio.duration) return;
-        const progress = (audio.currentTime / audio.duration) * 100;
-        if (timeBarFill) timeBarFill.style.width = `${progress}%`;
+        const liveCurrentPct = Math.min(100, (audio.currentTime / audio.duration) * 100);
+        if (timeBarFill) timeBarFill.style.width = `${liveCurrentPct}%`;
         if (currentTimeText) currentTimeText.textContent = formatTime(audio.currentTime);
 
-        if (progress >= 92) {
+        // Update active recording progress in memory
+        const activeItem = currentSequence.find(s => (s.id || s.audioId) === activeAudioId);
+        if (activeItem) {
+          const roundedPct = Math.round(liveCurrentPct);
+          if (roundedPct > (activeItem.progressPercent || 0)) {
+            activeItem.progressPercent = roundedPct;
+          }
+
+          const hasReachedComplete = roundedPct >= 100 || (audio.duration > 0 && audio.currentTime >= audio.duration * 0.96);
+          if (hasReachedComplete) {
+            activeItem.isCompleted = true;
+            activeItem.playbackCompleted = true;
+            activeItem.progressPercent = 100;
+
+            // Automatically unlock Recording 02
+            const nextIndex = currentSequence.findIndex(s => (s.id || s.audioId) === activeAudioId) + 1;
+            if (nextIndex < currentSequence.length && !currentSequence[nextIndex].isUnlocked) {
+              currentSequence[nextIndex].isUnlocked = true;
+              if (currentSequence[nextIndex].status === 'locked') {
+                currentSequence[nextIndex].status = 'unlocked';
+              }
+              renderSequenceJourney(currentSequence);
+            }
+          }
+
+          updatePlayerProgressPill(activeItem.progressPercent || 0, activeItem.isCompleted);
+          updateLiveProgressDisplay(activeItem);
+        }
+
+        if (liveCurrentPct >= 92) {
           revealUnderstandingSection();
         }
       });
@@ -652,14 +836,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /**
-   * 7. Telemetry Progress & Seeking Verification
+   * 8. Telemetry Progress & Seeking Verification
    */
   function startProgressTelemetry() {
     progressInterval = setInterval(() => {
       if (audio && !audio.paused && audio.duration) {
         sendTelemetryProgress();
       }
-    }, 3000);
+    }, 2500);
   }
 
   async function sendTelemetryProgress(forceEnd = false, isEnded = false) {
@@ -685,6 +869,31 @@ document.addEventListener('DOMContentLoaded', () => {
         if (data.playbackCompleted) {
           if (completionVerifiedTag) completionVerifiedTag.classList.remove('hidden');
           revealUnderstandingSection();
+        }
+
+        // If server returns updated sequence, merge unlock state
+        if (data.sequence && Array.isArray(data.sequence)) {
+          let hasStateChanged = false;
+          data.sequence.forEach(srvItem => {
+            const local = currentSequence.find(s => (s.id || s.audioId) === (srvItem.id || srvItem.audioId));
+            if (local) {
+              if (srvItem.isUnlocked && !local.isUnlocked) {
+                local.isUnlocked = true;
+                hasStateChanged = true;
+              }
+              if (srvItem.isCompleted && !local.isCompleted) {
+                local.isCompleted = true;
+                hasStateChanged = true;
+              }
+              if (srvItem.playbackCompleted && !local.playbackCompleted) {
+                local.playbackCompleted = true;
+                hasStateChanged = true;
+              }
+            }
+          });
+          if (hasStateChanged) {
+            renderSequenceJourney(currentSequence);
+          }
         }
       }
     } catch (err) {

@@ -909,6 +909,98 @@
       text-align: center;
     }
 
+    /* =========================================================================
+       AUDIO LISTENING PROGRESS FEATURE (OVERALL & INDIVIDUAL)
+       ========================================================================= */
+    .overall-progress-card {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+    }
+    .overall-progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .overall-progress-title {
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--text-ink);
+      letter-spacing: 0.02em;
+    }
+    .overall-progress-pct {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent-warm);
+      font-feature-settings: 'tnum';
+    }
+    .overall-progress-track {
+      width: 100%;
+      height: 8px;
+      background: var(--border-light);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 8px;
+      position: relative;
+    }
+    .overall-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #8a704c, #0f172a);
+      border-radius: 6px;
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+    .overall-progress-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Individual Chapter Progress Bar inside each row */
+    .chapter-progress-box {
+      margin-top: 8px;
+      width: 100%;
+      max-width: 260px;
+    }
+    .chapter-progress-track {
+      width: 100%;
+      height: 5px;
+      background: var(--border-light);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .chapter-progress-fill {
+      height: 100%;
+      background: var(--accent-warm);
+      border-radius: 4px;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    .chapter-item.completed .chapter-progress-fill {
+      background: #166534;
+    }
+    .chapter-item.active .chapter-progress-fill {
+      background: var(--text-ink);
+    }
+    .chapter-pct-text {
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-top: 3px;
+      display: block;
+    }
+
+    /* Player Progress Status Pill */
+    .status-progress {
+      background: var(--accent-warm-light);
+      color: var(--accent-warm);
+      border: 1px solid var(--border-light);
+    }
+
     /* Footer */
     footer {
       width: 100%;
@@ -1060,8 +1152,11 @@ Your Friend
           <div id="trackPartBadge" class="recording-part-indicator">Recording 01</div>
           <h2 id="trackTitle" class="recording-title">Personal Voice Message</h2>
         </div>
-        <div id="completionVerifiedTag" class="playback-status-pill status-completed hidden">
-          ✓ Verified Complete
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span id="playerProgressPill" class="playback-status-pill status-progress">0% Listened</span>
+          <div id="completionVerifiedTag" class="playback-status-pill status-completed hidden">
+            ✓ Verified Complete
+          </div>
         </div>
       </div>
 
@@ -1206,6 +1301,19 @@ Your Friend
         <span class="journey-title" id="journeyHeaderTitle">Sequential Recordings</span>
         <span id="journeyProgressBadge" class="journey-badge">0 of 0 Completed</span>
       </div>
+
+      <!-- Overall Listening Progress Widget -->
+      <div class="overall-progress-card" id="overallProgressCard">
+        <div class="overall-progress-header">
+          <span class="overall-progress-title" id="overallProgressTitle">Overall Listening Progress</span>
+          <span class="overall-progress-pct" id="overallProgressPct">0%</span>
+        </div>
+        <div class="overall-progress-track">
+          <div class="overall-progress-fill" id="overallProgressFill" style="width: 0%;"></div>
+        </div>
+        <div class="overall-progress-sub" id="overallProgressSub">0 of 2 Completed</div>
+      </div>
+
       <div id="sequenceListContainer" class="journey-list">
         <!-- Rendered dynamically via listen.js -->
       </div>

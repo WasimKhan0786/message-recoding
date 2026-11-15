@@ -543,8 +543,32 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /**
-   * 7. Sequence Journey Chapters List
+   * 7. Sequence Journey Chapters List & Overall Progress
    */
+  function renderOverallProgress(sequence) {
+    if (!sequence || sequence.length === 0) return;
+    const t = i18n[currentLanguage] || i18n.en;
+
+    const totalAudios = sequence.length;
+    const totalPct = sequence.reduce((acc, it) => acc + (it.progressPercent || 0), 0);
+    const overallPct = Math.min(100, Math.round(totalPct / totalAudios));
+    const completedCount = sequence.filter(it => it.isCompleted || it.playbackCompleted || it.progressPercent >= 100).length;
+
+    const opTitle = document.getElementById('overallProgressTitle');
+    const opPct = document.getElementById('overallProgressPct');
+    const opFill = document.getElementById('overallProgressFill');
+    const opSub = document.getElementById('overallProgressSub');
+
+    if (opTitle) opTitle.textContent = t.overallProgressTitle || "Overall Listening Progress";
+    if (opPct) opPct.textContent = `${overallPct}%`;
+    if (opFill) opFill.style.width = `${overallPct}%`;
+    if (opSub) opSub.textContent = `${overallPct}% Completed • ${completedCount} of ${totalAudios} Finished`;
+
+    if (journeyProgressBadge) {
+      journeyProgressBadge.textContent = t.journeyProgress(completedCount, totalAudios);
+    }
+  }
+
   function renderSequenceJourney(sequence) {
     if (!sequentialJourneyCard || !sequenceListContainer) return;
 
@@ -554,6 +578,8 @@ document.addEventListener('DOMContentLoaded', () => {
       sequentialJourneyCard.classList.add('hidden');
       return;
     }
+
+    renderOverallProgress(currentSequence);
 
     const completedCount = currentSequence.filter(s => s.hasResponse && s.playbackCompleted).length;
     const t = i18n[currentLanguage] || i18n.en;
@@ -565,53 +591,66 @@ document.addEventListener('DOMContentLoaded', () => {
       const isCompleted = item.hasResponse && item.playbackCompleted;
       const isCurrent = item.id === activeAudioId;
       const isUnlocked = item.isUnlocked || item.status === 'unlocked' || item.status === 'completed';
+      const pct = Math.min(100, Math.max(0, Math.round(item.progressPercent || 0)));
 
       let statusBadge = '';
       let itemClass = '';
       let clickAttr = '';
+      let pctLabel = '';
 
       if (isCompleted) {
         itemClass = 'completed';
         statusBadge = `
           <span style="font-size: 0.78rem; color: #166534; font-weight: 600;">
-            ${t.completedReplay}
+            ✓ Completed &bull; Replay
           </span>
         `;
+        pctLabel = '100% Completed';
         clickAttr = `onclick="window.switchAudioPart('${item.id}')"`;
       } else if (isCurrent) {
         itemClass = 'active';
         statusBadge = `
           <span style="font-size: 0.78rem; color: #0f172a; font-weight: 700;">
-            ${t.playingNow}
+            ● Playing Now
           </span>
         `;
+        pctLabel = `${pct}% Listened`;
+        clickAttr = `onclick="window.switchAudioPart('${item.id}')"`;
       } else if (isUnlocked) {
         itemClass = 'unlocked';
         statusBadge = `
           <span style="font-size: 0.78rem; color: #8a704c; font-weight: 600;">
-            ${t.unlocked}
+            ▶ Unlocked
           </span>
         `;
+        pctLabel = `${pct}% Listened`;
         clickAttr = `onclick="window.switchAudioPart('${item.id}')"`;
       } else {
         itemClass = 'locked';
         statusBadge = `
           <span style="font-size: 0.78rem; color: #94a3b8; font-weight: 500;">
-            ${t.locked}
+            🔒 Locked
           </span>
         `;
+        pctLabel = '0% • Complete Part 1 first';
       }
 
       return `
         <div class="chapter-item ${itemClass}" ${clickAttr} style="cursor: ${isUnlocked || isCompleted ? 'pointer' : 'not-allowed'};">
-          <div class="chapter-left">
+          <div class="chapter-left" style="flex: 1; min-width: 0;">
             <div class="chapter-num">${item.partNumber || 1}</div>
-            <div>
+            <div style="flex: 1; min-width: 0;">
               <div class="chapter-name">${escapeHtml(item.title)}</div>
               <div class="chapter-meta">${t.trackBadge} 0${item.partNumber || 1} &bull; ${escapeHtml(item.duration || 'Voice Recording')}</div>
+              <div class="chapter-progress-box">
+                <div class="chapter-progress-track">
+                  <div class="chapter-progress-fill" style="width: ${pct}%;"></div>
+                </div>
+                <span class="chapter-pct-text">${pctLabel}</span>
+              </div>
             </div>
           </div>
-          <div>${statusBadge}</div>
+          <div style="margin-left: 12px; flex-shrink: 0;">${statusBadge}</div>
         </div>
       `;
     }).join('');

@@ -255,6 +255,12 @@ router.get('/api/public/sequence', (req, res) => {
   const sessionId = req.query.sessionId || req.sessionID || 'anonymous';
   const sequence = dashboardService.getAudioSequence(sessionId);
   const ws = dashboardService.getWelcomeSettings();
+
+  const totalAudios = sequence.length;
+  const totalPctSum = sequence.reduce((sum, item) => sum + (item.progressPercent || 0), 0);
+  const overallProgressPercent = totalAudios > 0 ? Math.min(100, Math.round(totalPctSum / totalAudios)) : 0;
+  const completedAudiosCount = sequence.filter(item => item.isCompleted || item.playbackCompleted).length;
+
   const publicWelcomeSettings = {
     enabled: ws.enabled !== false,
     heading: ws.heading || 'A Message Especially for You',
@@ -265,7 +271,16 @@ router.get('/api/public/sequence', (req, res) => {
     thankYouMessage: ws.thankYouMessage || 'Thank you for your time, care, and attentive listening.',
     imageUrl: ws.imageKey ? `/api/public/welcome-image?v=${new Date(ws.updatedAt).getTime() || Date.now()}` : '/api/public/welcome-image'
   };
-  res.status(200).json({ success: true, sequence, welcomeSettings: publicWelcomeSettings });
+  res.status(200).json({ 
+    success: true, 
+    sequence, 
+    overallProgress: {
+      percent: overallProgressPercent,
+      completedCount: completedAudiosCount,
+      totalCount: totalAudios
+    },
+    welcomeSettings: publicWelcomeSettings 
+  });
 });
 
 /**
@@ -297,7 +312,23 @@ router.post('/api/public/progress', (req, res) => {
       wallClockElapsed: wallClockElapsed !== undefined ? Number(wallClockElapsed) : undefined,
       ended: Boolean(ended || forceEnd || audioCompleted)
     });
-    return res.status(200).json({ success: true, ...result });
+
+    const updatedSequence = dashboardService.getAudioSequence(sessionId);
+    const totalAudios = updatedSequence.length;
+    const totalPctSum = updatedSequence.reduce((sum, item) => sum + (item.progressPercent || 0), 0);
+    const overallProgressPercent = totalAudios > 0 ? Math.min(100, Math.round(totalPctSum / totalAudios)) : 0;
+    const completedAudiosCount = updatedSequence.filter(item => item.isCompleted || item.playbackCompleted).length;
+
+    return res.status(200).json({ 
+      success: true, 
+      ...result,
+      sequence: updatedSequence,
+      overallProgress: {
+        percent: overallProgressPercent,
+        completedCount: completedAudiosCount,
+        totalCount: totalAudios
+      }
+    });
   } catch (err) {
     return res.status(400).json({ error: err.message });
   }
@@ -775,6 +806,7 @@ router.post('/api/listen/:slug/response', async (req, res) => {
  */
 router.get('/api/public/sequence-stream/:audioId', async (req, res) => {
   const { audioId } = req.params;
+  const sessionId = req.query.sessionId || req.sessionID || 'anonymous';
 
   const audio = dashboardService.getAudioById(audioId);
   if (!audio) {
@@ -783,6 +815,15 @@ router.get('/api/public/sequence-stream/:audioId', async (req, res) => {
 
   if (!audio.s3Key) {
     return res.status(404).json({ error: 'Audio stream source not available.' });
+  }
+
+  // Verify sequential unlock status
+  const isUnlocked = dashboardService.isAudioUnlocked(audioId, sessionId);
+  if (!isUnlocked) {
+    return res.status(403).json({ 
+      error: 'Audio Locked', 
+      message: 'This recording is locked. Please complete the previous recording first.' 
+    });
   }
 
   try {
