@@ -114,6 +114,7 @@ h1, h2, h3, h4, h5, h6 {
 .gradient-text {
   background: var(--gradient-brand);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -242,6 +243,7 @@ h1, h2, h3, h4, h5, h6 {
 .brand-accent {
   background: var(--gradient-brand);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
