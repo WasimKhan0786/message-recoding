@@ -125,7 +125,8 @@ document.addEventListener('DOMContentLoaded', () => {
       privacyNote: "Your words are private and shared only with me.",
       reviewBtn: "Review Response",
       editBtn: "✏️ Edit Response",
-      submitBtn: "Confirm &amp; Send Response",
+      submitBtn: "Confirm &amp; Send Response &bull; Unlock Next Recording",
+      submitUnlockNotice: "🔒 <strong>Dhyan dein:</strong> Response confirm karke send karne ke baad hi agli recording unlock hogi aur aap aage sun sakenge.",
       previewHeader: "Review Your Reflection Before Submitting:",
       successTitle: "Your reflection has been delivered and saved.",
       successSub: "Thank you for sharing your thoughts. The next chapter is now unlocked.",
@@ -158,7 +159,8 @@ document.addEventListener('DOMContentLoaded', () => {
       privacyNote: "आपके शब्द पूरी तरह गोपनीय हैं और केवल मेरे साथ साझा होंगे।",
       reviewBtn: "जवाब की समीक्षा करें",
       editBtn: "✏️ जवाब बदलें",
-      submitBtn: "पुष्टि करें और जवाब भेजें",
+      submitBtn: "पुष्टि करें और जवाब भेजें &bull; अगली रिकॉर्डिंग अनलॉक करें",
+      submitUnlockNotice: "🔒 <strong>ध्यान दें:</strong> जवाब भेजने के बाद ही अगली रिकॉर्डिंग अनलॉक होगी और आप उसे सुन सकेंगे।",
       previewHeader: "अंतिम रूप से भेजने से पहले अपने जवाब की समीक्षा करें:",
       successTitle: "आपका जवाब सफलतापूर्वक भेज दिया गया है।",
       successSub: "अपने विचार साझा करने के लिए धन्यवाद। अब आप अगला भाग सुन सकते हैं।",
@@ -232,7 +234,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const editText = document.getElementById('editResponseBtnText');
     if (editText) editText.textContent = t.editBtn;
     const subText = document.getElementById('submitResponseBtnText');
-    if (subText) subText.textContent = t.submitBtn;
+    if (subText) subText.innerHTML = t.submitBtn;
+    const unNotice = document.getElementById('submitUnlockNotice');
+    if (unNotice && t.submitUnlockNotice) unNotice.innerHTML = t.submitUnlockNotice;
     const prevHeader = document.getElementById('previewStationeryHeader');
     if (prevHeader) prevHeader.textContent = t.previewHeader;
 
@@ -863,6 +867,8 @@ document.addEventListener('DOMContentLoaded', () => {
         reviewResponseBtn.classList.add('hidden');
         submitResponseBtn.classList.remove('hidden');
         editResponseBtn.classList.remove('hidden');
+        const unNotice = document.getElementById('submitUnlockNotice');
+        if (unNotice) unNotice.classList.remove('hidden');
       });
     }
 
@@ -876,6 +882,8 @@ document.addEventListener('DOMContentLoaded', () => {
         reviewResponseBtn.classList.remove('hidden');
         submitResponseBtn.classList.add('hidden');
         editResponseBtn.classList.add('hidden');
+        const unNotice = document.getElementById('submitUnlockNotice');
+        if (unNotice) unNotice.classList.add('hidden');
         if (responseSuccessBanner) responseSuccessBanner.classList.add('hidden');
       });
     }
@@ -947,13 +955,16 @@ document.addEventListener('DOMContentLoaded', () => {
           reviewResponseBtn.classList.remove('hidden');
           submitResponseBtn.classList.add('hidden');
           editResponseBtn.classList.add('hidden');
+          const unNotice = document.getElementById('submitUnlockNotice');
+          if (unNotice) unNotice.classList.add('hidden');
         }
       } catch (err) {
         console.error('Error submitting response:', err);
         alert('Network error submitting response. Please check your connection.');
       } finally {
         submitResponseBtn.disabled = false;
-        submitResponseBtn.textContent = 'Confirm & Send Response';
+        const currentT = i18n[currentLanguage] || i18n.en;
+        submitResponseBtn.innerHTML = `<span id="submitResponseBtnText">${currentT.submitBtn || 'Confirm &amp; Send Response &bull; Unlock Next Recording'}</span>`;
       }
     });
 
