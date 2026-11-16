@@ -41,7 +41,7 @@
             </svg>
           </div>
           <div class="brand-text-col">
-            <span class="brand-text">Audio<span class="brand-accent">Flow</span></span>
+            <span class="brand-text">Dev by <span class="brand-accent">Wasim Khan</span></span>
             <span class="sidebar-portal-badge">Admin Console</span>
           </div>
         </a>
@@ -1156,52 +1156,93 @@
 
   <!-- Modal 3: Generate Shared Link -->
   <div class="modal-overlay hidden" id="modalCreateLink">
-    <div class="modal-box">
+    <div class="modal-box modal-box-enhanced">
       <div class="modal-header">
-        <h3 class="modal-title">Generate Secure Sharing Link</h3>
-        <button class="modal-close-btn" data-close="modalCreateLink">&times;</button>
+        <div class="modal-header-custom">
+          <div class="modal-icon-badge">🔗</div>
+          <div>
+            <h3 class="modal-title">Generate Secure Sharing Link</h3>
+            <p class="modal-subtitle">Create an encrypted, trackable sharing link with custom expiration and access control.</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" data-close="modalCreateLink" title="Close modal">&times;</button>
       </div>
       <form id="formCreateLink">
         <div class="modal-body">
+
+          <!-- Audio Track Selector (Includes All Recordings Option) -->
           <div class="form-group">
-            <label class="form-label">Select Audio Track *</label>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <label class="form-label" style="margin-bottom: 0;">Select Audio Track *</label>
+              <span style="font-size: 0.72rem; color: #38bdf8; background: rgba(56, 189, 248, 0.1); padding: 2px 8px; border-radius: 12px; border: 1px solid rgba(56, 189, 248, 0.2);">✨ All Tracks or Single</span>
+            </div>
             <select id="linkAudioSelect" class="form-input" required>
-              <option value="">-- Choose Audio --</option>
+              <option value="all">✨ All Recordings (Complete Audio Journey / Full Playlist)</option>
             </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Target Recipient (Optional)</label>
-            <select id="linkRecipientSelect" class="form-input">
-              <option value="">-- Public / General Link (No Specific Recipient) --</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Link Expiration</label>
-            <select id="linkExpiresOption" class="form-input">
-              <option value="24h">24 Hours (1 Day)</option>
-              <option value="7d" selected>7 Days (Standard)</option>
-              <option value="30d">30 Days (1 Month)</option>
-              <option value="permanent">Permanent (Never Expires)</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="checkbox-label" style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin-bottom: 8px;">
-              <input type="checkbox" id="linkEnablePassword">
-              <span>Protect Link With Password</span>
-            </label>
-            <div id="linkPasswordBox" class="hidden">
-              <input type="password" id="linkPasswordInput" class="form-input" placeholder="Set custom access password...">
-              <small class="field-hint">Recipients must enter this password to stream the audio.</small>
+            <div id="allRecordingsNotice" class="field-info-banner">
+              <span>💡</span>
+              <span><strong>Complete Journey Mode:</strong> Recipient will listen to all recording chapters sequentially, answering reflections to unlock the next parts step-by-step.</span>
             </div>
           </div>
+
+          <!-- Recipient & Expiration Grid -->
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Target Recipient (Optional)</label>
+              <select id="linkRecipientSelect" class="form-input">
+                <option value="">-- Public / Anyone with Link --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Link Expiration</label>
+              <select id="linkExpiresOption" class="form-input">
+                <option value="24h">⚡ 24 Hours (1 Day)</option>
+                <option value="7d" selected>📅 7 Days (Standard)</option>
+                <option value="30d">🗓️ 30 Days (1 Month)</option>
+                <option value="permanent">♾️ Permanent (Never Expires)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Password Security Card -->
+          <div class="password-protection-card">
+            <label class="checkbox-label" style="display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none;">
+              <input type="checkbox" id="linkEnablePassword" style="width: 17px; height: 17px; accent-color: #3b82f6;">
+              <span style="font-weight: 600; color: #f1f5f9; font-size: 0.9rem;">🔒 Protect Link With Access Password</span>
+            </label>
+            
+            <div id="linkPasswordBox" class="hidden" style="margin-top: 12px;">
+              <div class="password-input-wrapper">
+                <input type="password" id="linkPasswordInput" class="form-input" placeholder="Set a secure password...">
+                <button type="button" id="toggleLinkPasswordBtn" class="password-toggle-btn" title="Show / Hide password">👁️</button>
+                <button type="button" id="generateLinkPasswordBtn" class="password-gen-btn" title="Generate strong random password">🎲 Generate</button>
+              </div>
+              <small class="field-hint" style="display: block; margin-top: 6px; color: #94a3b8; font-size: 0.76rem;">
+                Recipients must enter this exact password before they can stream or listen to any audio.
+              </small>
+            </div>
+          </div>
+
+          <!-- Sharing Notes & Quick Tag Chips -->
           <div class="form-group">
             <label class="form-label">Sharing Notes (Optional)</label>
             <input type="text" id="linkNotesInput" class="form-input" placeholder="e.g. Master mix preview v2">
+            <div class="quick-chips-row">
+              <span style="font-size: 0.74rem; color: #64748b; margin-right: 2px; align-self: center;">Quick tags:</span>
+              <button type="button" class="chip-btn" data-tag="Complete Audio Journey">🎧 Full Journey</button>
+              <button type="button" class="chip-btn" data-tag="Personal Letter & Voice">💌 Personal Letter</button>
+              <button type="button" class="chip-btn" data-tag="Private Review Draft">⭐ Private Review</button>
+              <button type="button" class="chip-btn" data-tag="Family & Friends">🤝 Family &amp; Friends</button>
+            </div>
           </div>
+
         </div>
+
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-close="modalCreateLink">Cancel</button>
-          <button type="submit" class="btn btn-primary" id="submitCreateLinkBtn">Generate Secure Link</button>
+          <button type="submit" class="btn btn-primary" id="submitCreateLinkBtn" style="display: inline-flex; align-items: center; gap: 8px;">
+            <span>✨ Generate Secure Link</span>
+          </button>
         </div>
       </form>
     </div>

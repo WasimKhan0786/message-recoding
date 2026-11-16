@@ -439,7 +439,7 @@ function getSharedLinks() {
       isExpired,
       isActive: link.status === 'active' && !isExpired,
       isPasswordProtected: !!link.isPasswordProtected,
-      audioTitle: audio ? audio.title : 'Deleted Audio',
+      audioTitle: link.audioId === 'all' ? '✨ All Recordings (Complete Journey)' : (audio ? audio.title : 'Deleted Audio'),
       recipientName: recipient ? recipient.name : 'Public / Unassigned',
       recipientEmail: recipient ? recipient.email : ''
     };
@@ -454,7 +454,8 @@ async function createSharedLink({
   expiresDays = null,
   password = null 
 }) {
-  const audio = dataStore.audios.find(a => a.id === audioId);
+  const sortedAudios = getSortedAudios();
+  const audio = audioId === 'all' ? (sortedAudios[0] || null) : dataStore.audios.find(a => a.id === audioId);
   const recipient = recipientId ? dataStore.recipients.find(r => r.id === recipientId) : null;
 
   const token = Math.random().toString(36).substring(2, 10) + Math.random().toString(36).substring(2, 10);
@@ -503,7 +504,8 @@ async function createSharedLink({
   if (audio) audio.shareCount = (audio.shareCount || 0) + 1;
   if (recipient) recipient.sharedLinksCount = (recipient.sharedLinksCount || 0) + 1;
 
-  logActivity('Shared Link Created', `Generated ${isPasswordProtected ? 'password-protected ' : ''}link for "${audio ? audio.title : audioId}"`, 'link');
+  const audioTitleForLog = audioId === 'all' ? 'All Recordings (Full Journey)' : (audio ? audio.title : audioId);
+  logActivity('Shared Link Created', `Generated ${isPasswordProtected ? 'password-protected ' : ''}link for "${audioTitleForLog}"`, 'link');
 
   if (mongoose.connection.readyState === 1) {
     SharedLink.create({
@@ -567,7 +569,10 @@ function deleteSharedLink(id) {
 function getSharedLinkBySlug(slug) {
   const link = dataStore.sharedLinks.find(l => l.slug === slug);
   if (!link) return null;
-  const audio = dataStore.audios.find(a => a.id === link.audioId);
+  const sortedAudios = getSortedAudios();
+  const audio = link.audioId === 'all' 
+    ? (sortedAudios[0] || null) 
+    : dataStore.audios.find(a => a.id === link.audioId);
   const recipient = dataStore.recipients.find(r => r.id === link.recipientId);
 
   const now = new Date();
@@ -592,14 +597,14 @@ function getSharedLinkBySlug(slug) {
     isRevoked,
     isPasswordProtected: !!link.isPasswordProtected,
     audio: audio ? {
-      id: audio.id,
-      title: audio.title,
+      id: link.audioId === 'all' ? 'all' : audio.id,
+      title: link.audioId === 'all' ? '✨ All Recordings (Complete Audio Journey)' : audio.title,
       genre: audio.genre,
       format: audio.format,
       duration: audio.duration,
       durationSeconds: audio.durationSeconds,
       fileSize: audio.fileSize,
-      description: audio.description,
+      description: link.audioId === 'all' ? 'Listen through all sequential voice recordings and share reflections.' : audio.description,
       understandingQuestion: audio.understandingQuestion || 'What did you understand from this audio lesson? Please summarize your key takeaways in your own words.',
       nextAudioId: audio.nextAudioId || null,
       s3Key: audio.s3Key

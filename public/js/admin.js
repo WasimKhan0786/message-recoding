@@ -841,6 +841,7 @@ async function openLinkModal(preselectedAudioId = null) {
   // Populate audio and recipient select dropdowns dynamically
   const audioSelect = document.getElementById('linkAudioSelect');
   const recipSelect = document.getElementById('linkRecipientSelect');
+  const allNotice = document.getElementById('allRecordingsNotice');
 
   try {
     const [audioRes, recipRes] = await Promise.all([
@@ -860,15 +861,35 @@ async function openLinkModal(preselectedAudioId = null) {
       return;
     }
 
-    audioSelect.innerHTML = audios.map(a => `
-      <option value="${a.id}" ${preselectedAudioId === a.id ? 'selected' : ''}>
-        ${escapeHtml(a.title)} (${escapeHtml(a.format || 'MP3')})
+    const isAllSelected = !preselectedAudioId || preselectedAudioId === 'all';
+
+    audioSelect.innerHTML = `
+      <option value="all" ${isAllSelected ? 'selected' : ''}>
+        ✨ All Recordings (Complete Audio Journey / Full Playlist)
       </option>
-    `).join('');
+      <optgroup label="Individual Single Tracks">
+        ${audios.map(a => `
+          <option value="${a.id}" ${preselectedAudioId === a.id ? 'selected' : ''}>
+            🎵 ${escapeHtml(a.title)} (${escapeHtml(a.format || 'MP3')} • ${escapeHtml(a.duration || 'Audio')})
+          </option>
+        `).join('')}
+      </optgroup>
+    `;
+
+    if (allNotice) {
+      allNotice.style.display = isAllSelected ? 'flex' : 'none';
+    }
+
+    // Toggle notice on track selection change
+    audioSelect.onchange = () => {
+      if (allNotice) {
+        allNotice.style.display = audioSelect.value === 'all' ? 'flex' : 'none';
+      }
+    };
 
     recipSelect.innerHTML = `
-      <option value="">-- Public / General Link (No Specific Recipient) --</option>
-      ${recips.map(r => `<option value="${r.id}">${escapeHtml(r.name)} (${escapeHtml(r.email)})</option>`).join('')}
+      <option value="">-- Public / Anyone with Link (No Specific Recipient) --</option>
+      ${recips.map(r => `<option value="${r.id}">👤 ${escapeHtml(r.name)} (${escapeHtml(r.email)})</option>`).join('')}
     `;
 
     openModal('modalCreateLink');
@@ -1025,17 +1046,57 @@ function initForms() {
   // Toggle Password Box in Shared Link Modal
   const enablePassCheck = document.getElementById('linkEnablePassword');
   const passBox = document.getElementById('linkPasswordBox');
+  const passInput = document.getElementById('linkPasswordInput');
+  const togglePassBtn = document.getElementById('toggleLinkPasswordBtn');
+  const genPassBtn = document.getElementById('generateLinkPasswordBtn');
+
   if (enablePassCheck && passBox) {
     enablePassCheck.addEventListener('change', () => {
       if (enablePassCheck.checked) {
         passBox.classList.remove('hidden');
-        document.getElementById('linkPasswordInput').focus();
+        if (passInput) passInput.focus();
       } else {
         passBox.classList.add('hidden');
-        document.getElementById('linkPasswordInput').value = '';
+        if (passInput) passInput.value = '';
       }
     });
   }
+
+  // Toggle show/hide password
+  if (togglePassBtn && passInput) {
+    togglePassBtn.addEventListener('click', () => {
+      const isPass = passInput.type === 'password';
+      passInput.type = isPass ? 'text' : 'password';
+      togglePassBtn.textContent = isPass ? '🙈' : '👁️';
+    });
+  }
+
+  // Generate strong random password
+  if (genPassBtn && passInput) {
+    genPassBtn.addEventListener('click', () => {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#';
+      let gen = '';
+      for (let i = 0; i < 8; i++) {
+        gen += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      passInput.type = 'text';
+      passInput.value = gen;
+      if (togglePassBtn) togglePassBtn.textContent = '🙈';
+      showToast(`Password generated: ${gen}`, 'info');
+    });
+  }
+
+  // Quick tag chips for sharing notes
+  document.querySelectorAll('#modalCreateLink .chip-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const notesInput = document.getElementById('linkNotesInput');
+      const tag = btn.getAttribute('data-tag');
+      if (notesInput && tag) {
+        notesInput.value = tag;
+        notesInput.focus();
+      }
+    });
+  });
 
   // Create Shared Link
   const formLink = document.getElementById('formCreateLink');

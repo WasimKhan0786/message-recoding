@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const i18n = {
     en: {
-      mastheadTitle: "Personal Digital Message",
+      mastheadTitle: '<span class="masthead-sub">Website Design &bull;</span> Developed by <span class="masthead-highlight">Wasim Khan</span>',
       mastheadPill: "Private Delivery",
       welcomeHeading: "A Message Especially for You",
       welcomeDesc: "I have something important and personal that I would like to share with you. Please take a moment to read this message before continuing.",
@@ -97,8 +97,8 @@ document.addEventListener('DOMContentLoaded', () => {
       disclaimerHeader: "Important Information & Disclaimer",
       disclaimerText: "<strong>Private &amp; Confidential:</strong> This space is completely private between us. Anything you write in response will be delivered directly and securely to me.",
       instructionsText: "<strong>Listening Instructions:</strong> Find a calm space without distractions. Headphones are recommended for optimal clarity. Both recordings are available sequentially—listen and share your reflection.",
-      confirmLabel: "I Have Read and Understood",
-      confirmSub: "Confirm that you have reviewed the written message and are ready to listen attentively.",
+      confirmLabel: "Bhai aap yahan click karke recording sun lijiye please...",
+      confirmSub: '<span class="confirmation-disclaimer-badge">⚠️ Disclaimer</span> Kripya shaant mahol me headphones lagakar poori recording dhyan se sunein taaki koi zaroori baat miss na ho.',
       proceedBtn: "Proceed to Voice Recordings",
       thankYou: "Thank you for your time, care, and attentive listening.",
       speedLabel: "Speed",
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
       lockedAlert: "Recording 02 is locked. Please listen through Recording 01 completely to unlock it."
     },
     hi: {
-      mastheadTitle: "व्यक्तिगत डिजिटल संदेश",
+      mastheadTitle: '<span class="masthead-sub">Website Design &bull;</span> Developed by <span class="masthead-highlight">Wasim Khan</span>',
       mastheadPill: "गोपनीय संदेश",
       welcomeHeading: "विशेष रूप से आपके लिए एक संदेश",
       welcomeDesc: "मेरे पास आपके साथ साझा करने के लिए कुछ महत्वपूर्ण और व्यक्तिगत बातें हैं। आगे बढ़ने से पहले कृपया इस संदेश को ध्यान से पढ़ें।",
@@ -140,8 +140,8 @@ document.addEventListener('DOMContentLoaded', () => {
       disclaimerHeader: "महत्वपूर्ण जानकारी एवं निर्देश",
       disclaimerText: "<strong>निजी एवं गोपनीय:</strong> यह स्थान पूरी तरह से निजी है। आपके द्वारा लिखा गया कोई भी जवाब सीधे और सुरक्षित रूप से केवल मुझ तक पहुंचेगा।",
       instructionsText: "<strong>सुनने के निर्देश:</strong> बिना किसी शोर-शराबे वाले शांत स्थान पर बैठें। स्पष्ट आवाज़ के लिए हेडफ़ोन की सलाह दी जाती है। रिकॉर्डिंग को ध्यान से सुनें और अपनी समझ साझा करें।",
-      confirmLabel: "मैंने यह संदेश पढ़ और समझ लिया है",
-      confirmSub: "पुष्टि करें कि आपने लिखा हुआ पत्र पढ़ लिया है और अब आवाज़ सुनने के लिए तैयार हैं।",
+      confirmLabel: "भाई आप यहाँ क्लिक करके रिकॉर्डिंग सुन लीजिए प्लीज...",
+      confirmSub: '<span class="confirmation-disclaimer-badge">⚠️ Disclaimer</span> कृपया शांत माहौल में हेडफ़ोन लगाकर पूरी रिकॉर्डिंग ध्यान से सुनें ताकि कोई ज़रूरी बात मिस न हो।',
       proceedBtn: "आवाज़ रिकॉर्डिंग सुनने के लिए आगे बढ़ें",
       thankYou: "अपना कीमती समय, परवाह और ध्यान से सुनने के लिए आपका बहुत-बहुत धन्यवाद।",
       speedLabel: "स्पीड",
@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Masthead
     const mTitle = document.getElementById('mastheadTitle');
-    if (mTitle) mTitle.textContent = t.mastheadTitle;
+    if (mTitle) mTitle.innerHTML = t.mastheadTitle;
     const mPill = document.getElementById('mastheadPill');
     if (mPill) mPill.textContent = t.mastheadPill;
 
@@ -213,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const cLabel = document.getElementById('readConfirmLabel');
     if (cLabel) cLabel.textContent = t.confirmLabel;
     const cSub = document.getElementById('readConfirmSub');
-    if (cSub) cSub.textContent = t.confirmSub;
+    if (cSub) cSub.innerHTML = t.confirmSub;
     const pBtnText = document.getElementById('startListeningBtnText');
     if (pBtnText) pBtnText.textContent = t.proceedBtn;
     if (welcomeThankYou) welcomeThankYou.textContent = t.thankYou;
@@ -330,7 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       startListeningBtn.addEventListener('click', () => {
         if (!hasConfirmedRead) {
-          alert('Please check "I Have Read and Understood" before continuing to the voice recordings.');
+          alert('Bhai kripya pehle checkbox par click karke confirm kar lijiye fir recording shuru hogi.');
           return;
         }
 
